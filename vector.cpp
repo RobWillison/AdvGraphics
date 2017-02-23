@@ -1,12 +1,14 @@
 #include <math.h>
 
 #include "vector.h"
+#include "vertex.h"
 
 Vector::Vector()
 {
   x = 0.0;
   y = 0.0;
   z = 0.0;
+  Vertex position;
 }
 
 void Vector::set(double px, double py, double pz)
@@ -14,6 +16,14 @@ void Vector::set(double px, double py, double pz)
   x = px;
   y = py;
   z = pz;
+}
+
+void Vector::set(double px, double py, double pz, Vertex v)
+{
+  x = px;
+  y = py;
+  z = pz;
+  position = v;
 }
 
 void Vector::normalise(void)
@@ -34,4 +44,16 @@ void Vector::normalise(void)
 double Vector::dot(const Vector &b)
 {
   return (x*b.x)+(y*b.y)+(z*b.z);
+}
+
+Vector Vector::cross(const Vector &b)
+{
+  Vector crossProduct;
+  crossProduct.set(0.0, 0.0, 0.0);
+
+  crossProduct.x = y*b.z - z*b.y;
+  crossProduct.y = z*b.x - x*b.z;
+  crossProduct.z = x*b.y - y*b.x;
+
+  return crossProduct;
 }

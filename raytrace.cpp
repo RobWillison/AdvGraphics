@@ -5,6 +5,7 @@ using namespace std;
 
 #include "scene.h"
 #include "sphere.h"
+#include "triangle.h"
 #include "directional_light.h"
 
 #define XSIZE 512
@@ -98,47 +99,48 @@ int main(int argc, const char *argv[])
 
   scene->addLight(*dl);
 
-  // Add 10 random spheres to the scene
-  for (n = 0; n < 10; n += 1)
-  {
-    Sphere *s;
-    Material *m;
-    Vertex p;
+  Triangle *triangle;
+  Material *m;
+  Vertex v1;
+  Vertex v2;
+  Vertex v3;
 
-    // position
-    p.set(frand()-0.5,frand()-0.5,frand()+1.0,1.0);
+  // position
+  v1.set(frand()-0.5,frand()-0.5,frand()+1.0,1.0);
+  v2.set(frand()-0.5,frand()-0.5,frand()+1.0,1.0);
+  v3.set(frand()-0.5,frand()-0.5,frand()+1.0,1.0);
 
-    // create with random radius
-    s = new Sphere(p, frand()/2.0f);
+  // create with random radius
+  triangle = new Triangle(v1, v2, v3);
 
-    // create new material with shared random Ka and Kd
-    m = new Material();
+  // create new material with shared random Ka and Kd
+  m = new Material();
 
-    cr = frand(); cg = frand(); cb = frand(); ca = frand();
+  cr = frand(); cg = frand(); cb = frand(); ca = frand();
 
-    m->ka.red = cr * 0.1f;
-    m->ka.green = cg * 0.1f;
-    m->ka.blue = cb * 0.1f;
-    m->kd.red = cr * 0.5f;
-    m->kd.green = cg * 0.5f;
-    m->kd.blue = cb * 0.5f;
-    m->kr.red =  0.0f;
-    m->kr.green = 0.0f;
-    m->kr.blue = 0.0f;
-    m->ks.red = 0.5f;
-    m->ks.green =  0.5f;
-    m->ks.blue = 0.5;
-    m->kt.red = 0.0;
-    m->kt.green = 0.0;
-    m->kt.blue = 0.0;
-    m->n = 400.0;
+  m->ka.red = cr * 0.1f;
+  m->ka.green = cg * 0.1f;
+  m->ka.blue = cb * 0.1f;
+  m->kd.red = cr * 0.5f;
+  m->kd.green = cg * 0.5f;
+  m->kd.blue = cb * 0.5f;
+  m->kr.red =  0.0f;
+  m->kr.green = 0.0f;
+  m->kr.blue = 0.0f;
+  m->ks.red = 0.5f;
+  m->ks.green =  0.5f;
+  m->ks.blue = 0.5;
+  m->kt.red = 0.0;
+  m->kt.green = 0.0;
+  m->kt.blue = 0.0;
+  m->n = 400.0;
 
-    // set spheres material
-    s->setMaterial(m);
+  // set spheres material
+  triangle->setMaterial(m);
 
-    // as sphere to scene
-    scene->addObject(*s);
-  }
+  // as sphere to scene
+  scene->addObject(*triangle);
+
 
   // RAYTRACE SCENE
 
