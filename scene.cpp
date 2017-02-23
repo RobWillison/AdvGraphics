@@ -97,7 +97,7 @@ Colour Scene::raytrace(Ray &ray, int level)
 
       if (dlc < 0.0)
       {
-	    dlc = 0.0;
+	       dlc = 0.0;
       }
 
       // calculate specular component here
