@@ -8,7 +8,6 @@ Vector::Vector()
   x = 0.0;
   y = 0.0;
   z = 0.0;
-  Vertex position;
 }
 
 void Vector::set(double px, double py, double pz)
@@ -16,14 +15,6 @@ void Vector::set(double px, double py, double pz)
   x = px;
   y = py;
   z = pz;
-}
-
-void Vector::set(double px, double py, double pz, Vertex v)
-{
-  x = px;
-  y = py;
-  z = pz;
-  position = v;
 }
 
 void Vector::normalise(void)
@@ -38,6 +29,13 @@ void Vector::normalise(void)
   x = x/l;
   y = y/l;
   z = z/l;
+}
+
+double Vector::length()
+{
+  double l = x*x+y*y+z*z;
+  l = sqrt(l);
+  return l;
 }
 
 // compute the dot product of the vector.

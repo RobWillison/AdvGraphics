@@ -7,6 +7,8 @@ using namespace std;
 #include "sphere.h"
 #include "triangle.h"
 #include "directional_light.h"
+#include "camera.h"
+#include "plyModel.h"
 
 #define XSIZE 512
 #define YSIZE 512
@@ -80,6 +82,8 @@ int main(int argc, const char *argv[])
   float ca, cr, cg,cb;
 
   cout << "Starting ...\n";
+  char fileName[] = "Models/bunny.ply";
+  PlyModel *plyModel = new PlyModel(fileName);
 
   srand(3115);
 
@@ -106,9 +110,9 @@ int main(int argc, const char *argv[])
   Vertex v3;
 
   // position
-  v1.set(frand()-0.5,frand()-0.5,frand()+1.0,1.0);
-  v2.set(frand()-0.5,frand()-0.5,frand()+1.0,1.0);
-  v3.set(frand()-0.5,frand()-0.5,frand()+1.0,1.0);
+  v1.set(0.0, 0.0, 1.0, 1.0);
+  v2.set(2.0, 0.0, 1.0, 1.0);
+  v3.set(2.0, 2.0, 1.0, 1.0);
 
   // create with random radius
   triangle = new Triangle(v1, v2, v3);
@@ -118,9 +122,9 @@ int main(int argc, const char *argv[])
 
   cr = frand(); cg = frand(); cb = frand(); ca = frand();
 
-  m->ka.red = cr * 0.1f;
-  m->ka.green = cg * 0.1f;
-  m->ka.blue = cb * 0.1f;
+  m->ka.red = cr * 0.5f;
+  m->ka.green = cg * 0.5f;
+  m->ka.blue = cb * 0.5f;
   m->kd.red = cr * 0.5f;
   m->kd.green = cg * 0.5f;
   m->kd.blue = cb * 0.5f;
@@ -145,22 +149,25 @@ int main(int argc, const char *argv[])
   // RAYTRACE SCENE
 
   cout << "Raytracing ...\n";
+  Vertex position;
+  position.set(0.0, 0.0, -2.0, 1.0);
+  Vertex windowBottomRight;
+  windowBottomRight.set(2.0, -2.0, 0.0, 1.0);
+  Vertex windowTopLeft;
+  windowTopLeft.set(-2.0, 2.0, 0.0, 1.0);
+  Vector lookat;
+  lookat.set(0.0, 0.0, 1.0);
+  Vector up;
+  up.set(0.0, 1.0, 0.0);
+
+  Camera *camera = new Camera(position, up, lookat, windowTopLeft, windowBottomRight);
 
   for(y=0;y<YSIZE;y+=1)
   {
     for(x=0;x<XSIZE;x+=1)
     {
-      Ray ray;
-      float d;
 
-      // Calculate a primary ray
-      d = 0.5;
-      ray.P.set(0.0,0.0,0.0,1.0);
-      ray.D.set((((float)x)/XSIZE)-0.5, (((float)y)/XSIZE)-0.5, d);
-      ray.D.normalise();
-
-      // Trace primary ray
-      Colour col = scene->raytrace(ray,6);
+      Colour col = camera->traceRay(XSIZE, YSIZE, x, y, scene);
 
       // Save result in frame buffer
       frame_buffer[y][x].red = col.red;

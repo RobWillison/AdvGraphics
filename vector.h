@@ -8,13 +8,12 @@ class Vector {
   double x;
   double y;
   double z;
-  Vertex position;
   Vector(void);
   void set(double x, double y, double z);
-  void set(double x, double y, double z, Vertex v);
   void normalise(void);
   double dot(const Vector &b);
   Vector cross(const Vector &b);
+  double length();
 };
 
 
