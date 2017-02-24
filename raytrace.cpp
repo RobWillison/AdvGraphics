@@ -82,8 +82,6 @@ int main(int argc, const char *argv[])
   float ca, cr, cg,cb;
 
   cout << "Starting ...\n";
-  char fileName[] = "Models/bunny.ply";
-  PlyModel *plyModel = new PlyModel(fileName);
 
   srand(3115);
 
