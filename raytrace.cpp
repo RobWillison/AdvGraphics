@@ -7,8 +7,10 @@ using namespace std;
 #include "sphere.h"
 #include "triangle.h"
 #include "directional_light.h"
+#include "point_light.h"
 #include "camera.h"
 #include "plyModel.h"
+#include "quadratic.h"
 
 #define XSIZE 512
 #define YSIZE 512
@@ -73,10 +75,11 @@ void clear_framebuffer()
 int main(int argc, const char *argv[])
 {
   Scene *scene;
-  Vector v;
+  Vertex ver;
+  Vector vec;
   int x,y;
   int n;
-  DirectionalLight *dl;
+  PointLight *pl;
   Colour cl;
   Vertex pp;
   float ca, cr, cg,cb;
@@ -93,15 +96,16 @@ int main(int argc, const char *argv[])
   scene = new Scene();
 
   // Create and add a directional light to the scene
-  v.set(-1.0,-1.0,1.0);
+  ver.set(1.0,1.0,-2.0, 1.0);
+  vec.set(-1.0, -1.0, 1.0);
   cl.set(1.0,1.0,1.0,1.0);
   pp.set(-50.0, 50.0, -48.25, 1.0);
 
-  dl = new DirectionalLight(v, cl);
+  pl = new PointLight(ver, vec, cl);
 
-  scene->addLight(*dl);
+  scene->addLight(*pl);
 
-  Triangle *triangle;
+  Quadratic *quadratic;
   Material *m;
   Vertex v1;
   Vertex v2;
@@ -113,7 +117,8 @@ int main(int argc, const char *argv[])
   v3.set(2.0, 2.0, 1.0, 1.0);
 
   // create with random radius
-  triangle = new Triangle(v1, v2, v3);
+  double terms[] = {1.0, -1.0, +1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  quadratic = new Quadratic(terms);
 
   // create new material with shared random Ka and Kd
   m = new Material();
@@ -138,10 +143,10 @@ int main(int argc, const char *argv[])
   m->n = 400.0;
 
   // set spheres material
-  triangle->setMaterial(m);
+  quadratic->setMaterial(m);
 
   // as sphere to scene
-  scene->addObject(*triangle);
+  scene->addObject(*quadratic);
 
 
   // RAYTRACE SCENE

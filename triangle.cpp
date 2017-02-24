@@ -38,7 +38,7 @@ bool Triangle::intersect(Ray &ray, Hit *hit)
   hit->obj = this;
 
   double intersectPoint = ((normal.x*ray.P.x + normal.y*ray.P.y + normal.z*ray.P.z) + D) * -1.0 / divisor;
-
+  hit->t = intersectPoint;
   hit->p.x = ray.D.x*intersectPoint + ray.P.x;
   hit->p.y = ray.D.y*intersectPoint + ray.P.y;
   hit->p.z = ray.D.z*intersectPoint + ray.P.z;

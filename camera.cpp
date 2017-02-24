@@ -34,6 +34,40 @@ Ray Camera::produceRay(int width, int height, double x, double y)
   return viewingRay;
 }
 
+Colour Camera::antiAliasTrace(int width, int height, int x, int y, Scene *scene)
+{
+  double xDouble = (double) x;
+  double yDouble = (double) y;
+  int samples = 0;
+  Colour averageCol;
+  averageCol.clear();
+
+  for (int i = 0; i < 4; i++)
+  {
+    xDouble = xDouble + 1/4;
+    for (int j = 0; j < 4; j++)
+    {
+      yDouble = yDouble + 1/4;
+      Ray ray = produceRay(width, height, xDouble, yDouble);
+      // Trace primary ray
+      Colour col = scene->raytrace(ray,6);
+      averageCol.red = averageCol.red + col.red;
+      averageCol.green = averageCol.green + col.green;
+      averageCol.blue = averageCol.blue + col.blue;
+      averageCol.alpha = averageCol.alpha + col.alpha;
+      samples++;
+    }
+  }
+  averageCol.red = averageCol.red / samples;
+  averageCol.green = averageCol.green / samples;
+  averageCol.blue = averageCol.blue / samples;
+  averageCol.alpha = averageCol.alpha / samples;
+
+  return averageCol;
+}
+
+
+
 Colour Camera::traceRay(int width, int height, int x, int y, Scene *scene)
 {
   double xFloat = (double) x;
@@ -45,9 +79,7 @@ Colour Camera::traceRay(int width, int height, int x, int y, Scene *scene)
   {
     for (yFloat; yFloat < y + 1; yFloat = yFloat + 0.1f )
     {
-      Ray ray = produceRay(width, height, xFloat, yFloat);
-      // Trace primary ray
-      col = scene->raytrace(ray,6);
+      col = antiAliasTrace(width, height, xFloat, yFloat, scene);
     }
   }
 

@@ -16,6 +16,7 @@ class Camera {
   Camera(Vertex &pos, Vector &vup, Vector &vlookat, Vertex topLeft, Vertex bottomRight);
   Ray produceRay(int width, int height, double x, double y);
   Colour traceRay(int width, int height, int x, int y, Scene *scene);
+  Colour antiAliasTrace(int width, int height, int x, int y, Scene *scene);
 };
 
 #endif
