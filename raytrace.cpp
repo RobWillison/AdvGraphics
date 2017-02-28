@@ -86,7 +86,7 @@ int main(int argc, const char *argv[])
 
   cout << "Starting ...\n";
 
-  srand(3115);
+  srand(1115);
 
   clear_framebuffer();
 
@@ -96,8 +96,8 @@ int main(int argc, const char *argv[])
   scene = new Scene();
 
   // Create and add a directional light to the scene
-  ver.set(1.0,1.0,-2.0, 1.0);
-  vec.set(-1.0, -1.0, 1.0);
+  ver.set(0.0,0.0,-2.0, 1.0);
+  vec.set(0.0, 0.0, 1.0);
   cl.set(1.0,1.0,1.0,1.0);
   pp.set(-50.0, 50.0, -48.25, 1.0);
 
@@ -105,61 +105,72 @@ int main(int argc, const char *argv[])
 
   scene->addLight(*pl);
 
-  Quadratic *quadratic;
+  Sphere *shape;
   Material *m;
   Vertex v1;
   Vertex v2;
   Vertex v3;
 
   // position
-  v1.set(0.0, 0.0, 1.0, 1.0);
+
   v2.set(2.0, 0.0, 1.0, 1.0);
   v3.set(2.0, 2.0, 1.0, 1.0);
 
   // create with random radius
-  double terms[] = {1.0, -1.0, +1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-  quadratic = new Quadratic(terms);
+  double terms[] = {1.0, -1.0, +001.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  int i;
+  for (i = 0; i < 10; i++){
+    Sphere *s;
+    Material *m;
+    Vertex p;
 
-  // create new material with shared random Ka and Kd
-  m = new Material();
+    // position
+    p.set(frand()-0.5,frand()-0.5,frand()+1.0,1.0);
 
-  cr = frand(); cg = frand(); cb = frand(); ca = frand();
+    // create with random radius
+    s = new Sphere(p, frand()/1.0f);
 
-  m->ka.red = cr * 0.5f;
-  m->ka.green = cg * 0.5f;
-  m->ka.blue = cb * 0.5f;
-  m->kd.red = cr * 0.5f;
-  m->kd.green = cg * 0.5f;
-  m->kd.blue = cb * 0.5f;
-  m->kr.red =  0.0f;
-  m->kr.green = 0.0f;
-  m->kr.blue = 0.0f;
-  m->ks.red = 0.5f;
-  m->ks.green =  0.5f;
-  m->ks.blue = 0.5;
-  m->kt.red = 0.0;
-  m->kt.green = 0.0;
-  m->kt.blue = 0.0;
-  m->n = 400.0;
+    // create new material with shared random Ka and Kd
+    m = new Material();
 
-  // set spheres material
-  quadratic->setMaterial(m);
+    cr = frand(); cg = frand(); cb = frand(); ca = frand();
 
-  // as sphere to scene
-  scene->addObject(*quadratic);
+    m->ka.red = cr * 0.1f;
+    m->ka.green = cg * 0.1f;
+    m->ka.blue = cb * 0.1f;
+    m->kd.red = cr * 0.5f;
+    m->kd.green = cg * 0.5f;
+    m->kd.blue = cb * 0.5f;
+    m->kr.red =  0.0f;
+    m->kr.green = 0.0f;
+    m->kr.blue = 0.0f;
+    m->ks.red = 0.5f;
+    m->ks.green =  0.5f;
+    m->ks.blue = 0.5;
+    m->kt.red = 0.0;
+    m->kt.green = 0.0;
+    m->kt.blue = 0.0;
+    m->n = 400.0;
+
+    // set spheres material
+    s->setMaterial(m);
+
+    // as sphere to scene
+    scene->addObject(*s);
+  }
 
 
   // RAYTRACE SCENE
 
   cout << "Raytracing ...\n";
   Vertex position;
-  position.set(0.0, 0.0, -2.0, 1.0);
+  position.set(0.0, 5.0, -1.0, 1.0);
   Vertex windowBottomRight;
   windowBottomRight.set(2.0, -2.0, 0.0, 1.0);
   Vertex windowTopLeft;
   windowTopLeft.set(-2.0, 2.0, 0.0, 1.0);
   Vector lookat;
-  lookat.set(0.0, 0.0, 1.0);
+  lookat.set(0.0, 1.0, 1.0);
   Vector up;
   up.set(0.0, 1.0, 0.0);
 

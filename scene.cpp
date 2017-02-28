@@ -1,6 +1,7 @@
 #include <math.h>
 
 #include "scene.h"
+#include <stdio.h>
 
 Scene::Scene()
 {
@@ -53,10 +54,10 @@ Colour Scene::raytrace(Ray &ray, int level)
     {
       if (hit.t < t)
       {
-	closest = hit.obj;
-	t = hit.t;
-	normal = hit.n;
-	position = hit.p;
+      	closest = hit.obj;
+      	t = hit.t;
+      	normal = hit.n;
+      	position = hit.p;
       }
     }
 
@@ -94,7 +95,7 @@ Colour Scene::raytrace(Ray &ray, int level)
       xldir.normalise();
 
       float dlc = xldir.dot(normal);
-
+      
       if (dlc < 0.0)
       {
 	       dlc = 0.0;

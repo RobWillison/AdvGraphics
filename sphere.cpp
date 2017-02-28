@@ -86,6 +86,7 @@ bool Sphere::intersect(Ray &ray, Hit *hit)
   hit->p.y = ray.P.y  + t0 * ray.D.y;
   hit->p.z = ray.P.z  + t0 * ray.D.z;
   hit->p.w = 1.0;
+  
   hit->n.x = hit->p.x - sp.x;
   hit->n.y = hit->p.y - sp.y;
   hit->n.z = hit->p.z - sp.z;

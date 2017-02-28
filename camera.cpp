@@ -5,13 +5,16 @@
 
 #include "camera.h"
 
-Camera::Camera(Vertex &camPosition, Vector &vUp, Vector &vLookat, Vertex topLeft, Vertex bottomRight)
+Camera::Camera(Vertex &camPosition, Vector &vUp, Vector &vLookat)
 {
   position = camPosition;
   upVector = vUp;
   lookatVector = vLookat;
   widowTopLeft = topLeft;
   windowBottomRight = bottomRight;
+
+  //Get plane tangential to lookat given distance aways
+  //Calculate windows points
 }
 
 Ray Camera::produceRay(int width, int height, double x, double y)

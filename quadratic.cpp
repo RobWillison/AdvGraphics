@@ -41,9 +41,19 @@ bool Quadratic::intersect(Ray &ray, Hit *hit)
 
   hit->obj = this;
   hit->t = t;
+
   hit->p.x = dx*t + px;
   hit->p.y = dy*t + py;
   hit->p.z = dz*t + pz;
+
+  //http://marctenbosch.com/photon/mbosch_intersection.pdf
+  Vector normal;
+  normal.x = 2 * (terms[0] * hit->p.x + terms[1] * hit->p.y + terms[2] * hit->p.z + terms[3]);
+  normal.y = 2 * (terms[1] * hit->p.x + terms[4] * hit->p.y + terms[5] * hit->p.z + terms[6]);
+  normal.z = 2 * (terms[2] * hit->p.x + terms[5] * hit->p.y + terms[7] * hit->p.z + terms[8]);
+
+  normal.normalise();
+  hit->n = normal;
 
   return true;
 }
