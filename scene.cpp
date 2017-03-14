@@ -123,8 +123,15 @@ Colour Scene::raytrace(Ray &ray, int level)
       view.z = cameraPos.z - position.z;
 
       view.normalise();
+      double reflectionDiff = reflection.dot(view);
 
-      float slc = pow(reflection.dot(view), 20);
+      float slc = 0.0;
+
+      if (reflectionDiff <= -0.0)
+      {
+        slc = pow(reflectionDiff, 20);
+      }
+
 
       // combine components
 

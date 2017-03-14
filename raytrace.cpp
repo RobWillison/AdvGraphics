@@ -110,14 +110,14 @@ int main(int argc, const char *argv[])
   Vector vec2;
   Colour cl2;
   // Create and add a directional light to the scene
-  ver2.set(-0.5, -0.5, 0.0, 1.0);
-  vec2.set(0.5, 0.5, 1.0);
+  ver2.set(0.5, 0.5, 0.0, 1.0);
+  vec2.set(-1.0, -1.0, 1.0);
   cl2.set(0.0,1.0,0.0,1.0);
 
   pl2 = new PointLight(ver2, vec2, cl2);
 
   scene->addLight(*pl2);
-  scene->addLight(*pl1);
+  //scene->addLight(*pl1);
 
   Sphere *shape;
   Material *m;
