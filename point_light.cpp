@@ -26,12 +26,12 @@ PointLight::PointLight(Vertex &p, Vector &d, Colour &i)
 }
 
 // provide the intensity and direction from which light arrives at given vertex
-
 void PointLight::getLightProperties(Vertex &pos, Vector *ldir, Colour *i)
 {
-  ldir->x = pos.x - position.x;
-  ldir->y = pos.y - position.y;
-  ldir->z = pos.z - position.z;
+
+  ldir->x = position.x - pos.x;
+  ldir->y = position.y - pos.y;
+  ldir->z = position.z - pos.z;
 
   // the intensity is always the same (not dependent on where it's going
   i->set(intensity.getRed(),intensity.getGreen(),intensity.getBlue(),intensity.getAlpha());
@@ -39,13 +39,21 @@ void PointLight::getLightProperties(Vertex &pos, Vector *ldir, Colour *i)
   if (direction.length() == 0.0) return;
 
   Vector directionToPoint;
-  directionToPoint.x = position.x - pos.x;
-  directionToPoint.y = position.y - pos.y;
-  directionToPoint.z = position.z - pos.z;
+  directionToPoint.x = pos.x - position.x;
+  directionToPoint.y = pos.y - position.y;
+  directionToPoint.z = pos.z - position.z;
+
+  directionToPoint.normalise();
+  direction.normalise();
 
   double dotProduct = directionToPoint.dot(direction);
 
-  i->red = i->red * dotProduct;
-  i->green = i->green * dotProduct;
-  i->blue = i->blue * dotProduct;
+  if (dotProduct <= -0.0) {
+    i->clear();
+    return;
+  }
+
+  i->red = i->red * pow(dotProduct, 0.5);
+  i->green = i->green * pow(dotProduct, 0.5);
+  i->blue = i->blue * pow(dotProduct, 0.5);
 }

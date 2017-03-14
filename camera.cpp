@@ -10,8 +10,8 @@ Camera::Camera(Vertex &camPosition, Vector &vUp, Vector &vLookat)
   position = camPosition;
   upVector = vUp;
   lookatVector = vLookat;
-  widowTopLeft = topLeft;
-  windowBottomRight = bottomRight;
+
+  focalLength = 1.0;
 
   //Get plane tangential to lookat given distance aways
   //Calculate windows points
@@ -19,21 +19,38 @@ Camera::Camera(Vertex &camPosition, Vector &vUp, Vector &vLookat)
 
 Ray Camera::produceRay(int width, int height, double x, double y)
 {
+  Vector w;
+
+  w.x = position.x - lookatVector.x;
+  w.y = position.y - lookatVector.y;
+  w.z = position.z - lookatVector.z;
+
+  w.x = w.x / w.length();
+  w.y = w.y / w.length();
+  w.z = w.z / w.length();
+
+  Vector u = upVector.cross(w);
+  u.x = u.x / u.length();
+  u.y = u.y / u.length();
+  u.z = u.z / u.length();
+
+  Vector v = w.cross(u);
+
+  u.normalise();
+  v.normalise();
+
   Ray viewingRay;
   viewingRay.P = position;
-  double w = widowTopLeft.z;
-  double u = windowBottomRight.x + (widowTopLeft.x - windowBottomRight.x)*((x + 0.5) / width);
-  double v = windowBottomRight.y + (widowTopLeft.y - windowBottomRight.y)*((y + 0.5) / height);
-  Vector uVec = lookatVector.cross(upVector);
 
-  viewingRay.D.z = (w * lookatVector.z) + (v * upVector.z) + (u * uVec.z) - position.z;
-  viewingRay.D.y = (w * lookatVector.y) + (v * upVector.y) + (u * uVec.y) - position.y;
-  viewingRay.D.x = (w * lookatVector.x) + (v * upVector.x) + (u * uVec.x) - position.x;
+  double xv = 0.01 * (x - (width / 2));
+  double yv = 0.01 * (y - (height / 2));
 
+  viewingRay.D.x = xv*u.x + yv*v.x - w.x;
+  viewingRay.D.y = xv*u.y + yv*v.y - w.y;
+  viewingRay.D.z = xv*u.z + yv*v.z - w.z;
 
   viewingRay.D.normalise();
-
-
+  //printf("%f %f %f\n",viewingRay.D.x, viewingRay.D.y, viewingRay.D.z);
   return viewingRay;
 }
 
@@ -45,10 +62,10 @@ Colour Camera::antiAliasTrace(int width, int height, int x, int y, Scene *scene)
   Colour averageCol;
   averageCol.clear();
 
-  for (int i = 0; i < 4; i++)
+  for (int i = 0; i < 5; i++)
   {
     xDouble = xDouble + 1/4;
-    for (int j = 0; j < 4; j++)
+    for (int j = 0; j < 5; j++)
     {
       yDouble = yDouble + 1/4;
       Ray ray = produceRay(width, height, xDouble, yDouble);
@@ -90,3 +107,7 @@ Colour Camera::traceRay(int width, int height, int x, int y, Scene *scene)
   return col;
 }
 
+Vertex Camera::getPosition()
+{
+  return position;
+}

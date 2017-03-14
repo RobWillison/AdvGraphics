@@ -79,7 +79,7 @@ int main(int argc, const char *argv[])
   Vector vec;
   int x,y;
   int n;
-  PointLight *pl;
+
   Colour cl;
   Vertex pp;
   float ca, cr, cg,cb;
@@ -94,16 +94,30 @@ int main(int argc, const char *argv[])
 
   // Create a new scene to render
   scene = new Scene();
-
+  PointLight *pl1;
   // Create and add a directional light to the scene
-  ver.set(0.0,0.0,-2.0, 1.0);
-  vec.set(0.0, 0.0, 1.0);
-  cl.set(1.0,1.0,1.0,1.0);
-  pp.set(-50.0, 50.0, -48.25, 1.0);
+  Vertex ver1;
+  Vector vec1;
+  Colour cl1;
+  ver1.set(0.5, 0.5, 0.0, 1.0);
+  vec1.set(-0.5, -0.5, 1.0);
+  cl1.set(1.0,0.0,0.0,1.0);
 
-  pl = new PointLight(ver, vec, cl);
+  pl1 = new PointLight(ver1, vec1, cl1);
 
-  scene->addLight(*pl);
+  PointLight *pl2;
+  Vertex ver2;
+  Vector vec2;
+  Colour cl2;
+  // Create and add a directional light to the scene
+  ver2.set(-0.5, -0.5, 0.0, 1.0);
+  vec2.set(0.5, 0.5, 1.0);
+  cl2.set(0.0,1.0,0.0,1.0);
+
+  pl2 = new PointLight(ver2, vec2, cl2);
+
+  scene->addLight(*pl2);
+  scene->addLight(*pl1);
 
   Sphere *shape;
   Material *m;
@@ -116,31 +130,27 @@ int main(int argc, const char *argv[])
   v2.set(2.0, 0.0, 1.0, 1.0);
   v3.set(2.0, 2.0, 1.0, 1.0);
 
-  // create with random radius
-  double terms[] = {1.0, -1.0, +001.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
   int i;
-  for (i = 0; i < 10; i++){
+  for (i = 0; i < 2; i++){
     Sphere *s;
     Material *m;
     Vertex p;
 
     // position
-    p.set(frand()-0.5,frand()-0.5,frand()+1.0,1.0);
+    p.set(0.0, 0.0, 3.0,1.0);
 
     // create with random radius
-    s = new Sphere(p, frand()/1.0f);
+    s = new Sphere(p, 2.0);
 
     // create new material with shared random Ka and Kd
     m = new Material();
 
-    cr = frand(); cg = frand(); cb = frand(); ca = frand();
-
-    m->ka.red = cr * 0.1f;
-    m->ka.green = cg * 0.1f;
-    m->ka.blue = cb * 0.1f;
-    m->kd.red = cr * 0.5f;
-    m->kd.green = cg * 0.5f;
-    m->kd.blue = cb * 0.5f;
+    m->ka.red = 0.1f;
+    m->ka.green = 0.1f;
+    m->ka.blue = 0.1f;
+    m->kd.red = 0.5f;
+    m->kd.green = 0.5f;
+    m->kd.blue = 0.5f;
     m->kr.red =  0.0f;
     m->kr.green = 0.0f;
     m->kr.blue = 0.0f;
@@ -164,17 +174,15 @@ int main(int argc, const char *argv[])
 
   cout << "Raytracing ...\n";
   Vertex position;
-  position.set(0.0, 5.0, -1.0, 1.0);
-  Vertex windowBottomRight;
-  windowBottomRight.set(2.0, -2.0, 0.0, 1.0);
-  Vertex windowTopLeft;
-  windowTopLeft.set(-2.0, 2.0, 0.0, 1.0);
+  position.set(0.0, 0.0, 0.0, 1.0);
   Vector lookat;
-  lookat.set(0.0, 1.0, 1.0);
+  lookat.set(0.0, 0.0, 1.0);
   Vector up;
   up.set(0.0, 1.0, 0.0);
 
-  Camera *camera = new Camera(position, up, lookat, windowTopLeft, windowBottomRight);
+  Camera *camera = new Camera(position, up, lookat);
+
+  scene->setCamera(*camera);
 
   for(y=0;y<YSIZE;y+=1)
   {

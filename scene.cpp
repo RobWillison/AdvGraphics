@@ -2,12 +2,18 @@
 
 #include "scene.h"
 #include <stdio.h>
+#include "camera.h"
 
 Scene::Scene()
 {
   scache = 0;
   obj_list = (Object *)0;
   light_list = (Light *)0;
+}
+
+void Scene::setCamera(Camera &cam)
+{
+  camera = &cam;
 }
 
 void Scene::addObject(Object &obj)
@@ -95,15 +101,30 @@ Colour Scene::raytrace(Ray &ray, int level)
       xldir.normalise();
 
       float dlc = xldir.dot(normal);
-      
+
       if (dlc < 0.0)
       {
 	       dlc = 0.0;
       }
 
       // calculate specular component here
+      Vector reflection;
 
-      float slc = 0.0;
+      reflection.x = xldir.x - 2.0 * (xldir.dot(normal)) * normal.x;
+      reflection.y = xldir.y - 2.0 * (xldir.dot(normal)) * normal.y;
+      reflection.z = xldir.z - 2.0 * (xldir.dot(normal)) * normal.z;
+
+      reflection.normalise();
+
+      Vector view;
+      Vertex cameraPos = camera->getPosition();
+      view.x = cameraPos.x - position.x;
+      view.y = cameraPos.y - position.y;
+      view.z = cameraPos.z - position.z;
+
+      view.normalise();
+
+      float slc = pow(reflection.dot(view), 20);
 
       // combine components
 

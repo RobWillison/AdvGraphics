@@ -12,11 +12,14 @@ class Camera {
   Vector lookatVector;
   Vertex widowTopLeft;
   Vertex windowBottomRight;
+  double focalLength;
+  double lensAngle;
  public:
-  Camera(Vertex &pos, Vector &vup, Vector &vlookat, Vertex topLeft, Vertex bottomRight);
+  Camera(Vertex &pos, Vector &vup, Vector &vlookat);
   Ray produceRay(int width, int height, double x, double y);
   Colour traceRay(int width, int height, int x, int y, Scene *scene);
   Colour antiAliasTrace(int width, int height, int x, int y, Scene *scene);
+  Vertex getPosition();
 };
 
 #endif
