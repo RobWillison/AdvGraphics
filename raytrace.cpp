@@ -101,7 +101,7 @@ int main(int argc, const char *argv[])
   Colour cl1;
   ver1.set(0.5, 0.5, 0.0, 1.0);
   vec1.set(-0.5, -0.5, 1.0);
-  cl1.set(1.0,0.0,0.0,1.0);
+  cl1.set(1.0,1.0,1.0,1.0);
 
   pl1 = new PointLight(ver1, vec1, cl1);
 
@@ -131,26 +131,30 @@ int main(int argc, const char *argv[])
   v3.set(2.0, 2.0, 1.0, 1.0);
 
   int i;
-  for (i = 0; i < 2; i++){
+  // Add 10 random spheres to the scene
+  for (n = 0; n < 10; n += 1)
+  {
     Sphere *s;
     Material *m;
     Vertex p;
 
     // position
-    p.set(0.0, 0.0, 3.0,1.0);
+    p.set(frand()-0.5,frand()-0.5,frand()+1.0,1.0);
 
     // create with random radius
-    s = new Sphere(p, 2.0);
+    s = new Sphere(p, frand()/2.0f);
 
     // create new material with shared random Ka and Kd
     m = new Material();
 
-    m->ka.red = 0.1f;
-    m->ka.green = 0.1f;
-    m->ka.blue = 0.1f;
-    m->kd.red = 0.5f;
-    m->kd.green = 0.5f;
-    m->kd.blue = 0.5f;
+    cr = frand(); cg = frand(); cb = frand(); ca = frand();
+
+    m->ka.red = cr * 0.1f;
+    m->ka.green = cg * 0.1f;
+    m->ka.blue = cb * 0.1f;
+    m->kd.red = cr * 0.5f;
+    m->kd.green = cg * 0.5f;
+    m->kd.blue = cb * 0.5f;
     m->kr.red =  0.0f;
     m->kr.green = 0.0f;
     m->kr.blue = 0.0f;
@@ -169,12 +173,11 @@ int main(int argc, const char *argv[])
     scene->addObject(*s);
   }
 
-
   // RAYTRACE SCENE
 
   cout << "Raytracing ...\n";
   Vertex position;
-  position.set(0.0, 0.0, 0.0, 1.0);
+  position.set(0.0, 0.0, 0.5, 1.0);
   Vector lookat;
   lookat.set(0.0, 0.0, 1.0);
   Vector up;
