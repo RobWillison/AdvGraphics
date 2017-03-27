@@ -129,7 +129,7 @@ Colour Scene::raytrace(Ray &ray, int level)
 
       if (reflectionDiff <= -0.0)
       {
-        slc = pow(reflectionDiff, 20);
+        slc = pow(reflectionDiff, 2);
       }
 
 

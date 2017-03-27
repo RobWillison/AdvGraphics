@@ -10,8 +10,8 @@ Camera::Camera(Vertex &camPosition, Vector &vUp, Vector &vLookat)
   position = camPosition;
   upVector = vUp;
   lookatVector = vLookat;
-
-  focalLength = 1.0;
+  upVector.normalise();
+  lookatVector.normalise();
 
   //Get plane tangential to lookat given distance aways
   //Calculate windows points
@@ -20,34 +20,27 @@ Camera::Camera(Vertex &camPosition, Vector &vUp, Vector &vLookat)
 Ray Camera::produceRay(int width, int height, double x, double y)
 {
   Vector w;
-
   w.x = position.x - lookatVector.x;
   w.y = position.y - lookatVector.y;
   w.z = position.z - lookatVector.z;
-
-  w.x = w.x / w.length();
-  w.y = w.y / w.length();
-  w.z = w.z / w.length();
+  w.normalise();
 
   Vector u = upVector.cross(w);
-  u.x = u.x / u.length();
-  u.y = u.y / u.length();
-  u.z = u.z / u.length();
+  u.normalise();
 
   Vector v = w.cross(u);
-
-  u.normalise();
   v.normalise();
 
   Ray viewingRay;
   viewingRay.P = position;
 
-  double xv = 0.01 * (x - (width / 2));
-  double yv = 0.01 * (y - (height / 2));
+  //45 degrees
+  double fieldOfView = (double) (45 / 2.0f) * (M_PI / 180)
 
-  viewingRay.D.x = xv*u.x + yv*v.x - w.x;
-  viewingRay.D.y = xv*u.y + yv*v.y - w.y;
-  viewingRay.D.z = xv*u.z + yv*v.z - w.z;
+  Vertex center = position - w * d;
+  Vertex leftBottom = center - u * width/2 - v * height/2;
+
+  
 
   viewingRay.D.normalise();
   //printf("%f %f %f\n",viewingRay.D.x, viewingRay.D.y, viewingRay.D.z);
@@ -62,12 +55,12 @@ Colour Camera::antiAliasTrace(int width, int height, int x, int y, Scene *scene)
   Colour averageCol;
   averageCol.clear();
 
-  for (int i = 0; i < 5; i++)
+  for (int i = 0; i < 4; i++)
   {
-    xDouble = xDouble + 1/4;
-    for (int j = 0; j < 5; j++)
+    xDouble = xDouble + 0.25f;
+    for (int j = 0; j < 4; j++)
     {
-      yDouble = yDouble + 1/4;
+      yDouble = yDouble + 0.25f;
       Ray ray = produceRay(width, height, xDouble, yDouble);
       // Trace primary ray
       Colour col = scene->raytrace(ray,6);

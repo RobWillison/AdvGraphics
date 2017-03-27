@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <math.h>       /* acos */
 using namespace std;
 
 #include "scene.h"
@@ -86,7 +87,7 @@ int main(int argc, const char *argv[])
 
   cout << "Starting ...\n";
 
-  srand(1115);
+  srand(1117);
 
   clear_framebuffer();
 
@@ -110,9 +111,9 @@ int main(int argc, const char *argv[])
   Vector vec2;
   Colour cl2;
   // Create and add a directional light to the scene
-  ver2.set(0.5, 0.5, 0.0, 1.0);
-  vec2.set(-1.0, -1.0, 1.0);
-  cl2.set(0.0,1.0,0.0,1.0);
+  ver2.set(0.0, 0.0, 1.0, 1.0);
+  vec2.set(0.0, 0.0, 0.1);
+  cl2.set(1.0,1.0,1.0,1.0);
 
   pl2 = new PointLight(ver2, vec2, cl2);
 
@@ -132,17 +133,17 @@ int main(int argc, const char *argv[])
 
   int i;
   // Add 10 random spheres to the scene
-  for (n = 0; n < 10; n += 1)
+  for (n = 0; n < 1; n += 1)
   {
     Sphere *s;
     Material *m;
     Vertex p;
 
     // position
-    p.set(frand()-0.5,frand()-0.5,frand()+1.0,1.0);
+    p.set(0.0, 0.0, 1.0, 1.0);
 
     // create with random radius
-    s = new Sphere(p, frand()/2.0f);
+    s = new Sphere(p, 5.0f);
 
     // create new material with shared random Ka and Kd
     m = new Material();
@@ -177,7 +178,7 @@ int main(int argc, const char *argv[])
 
   cout << "Raytracing ...\n";
   Vertex position;
-  position.set(0.0, 0.0, 0.5, 1.0);
+  position.set(0.0, 0.0, -10.0, 1.0);
   Vector lookat;
   lookat.set(0.0, 0.0, 1.0);
   Vector up;
@@ -200,6 +201,7 @@ int main(int argc, const char *argv[])
       frame_buffer[y][x].blue = col.blue;
     }
   }
+
 
   // OUTPUT IMAGE
 
