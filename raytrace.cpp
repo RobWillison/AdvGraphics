@@ -100,8 +100,8 @@ int main(int argc, const char *argv[])
   Vertex ver1;
   Vector vec1;
   Colour cl1;
-  ver1.set(0.5, 0.5, 0.0, 1.0);
-  vec1.set(-0.5, -0.5, 1.0);
+  ver1.set(40.0, 0.0, 0.0, 1.0);
+  vec1.set(-0.1, 0.0, 1.0);
   cl1.set(1.0,1.0,1.0,1.0);
 
   pl1 = new PointLight(ver1, vec1, cl1);
@@ -110,14 +110,8 @@ int main(int argc, const char *argv[])
   Vertex ver2;
   Vector vec2;
   Colour cl2;
-  // Create and add a directional light to the scene
-  ver2.set(0.0, 0.0, 1.0, 1.0);
-  vec2.set(0.0, 0.0, 0.1);
-  cl2.set(1.0,1.0,1.0,1.0);
 
-  pl2 = new PointLight(ver2, vec2, cl2);
-
-  scene->addLight(*pl2);
+  scene->addLight(*pl1);
   //scene->addLight(*pl1);
 
   Sphere *shape;
@@ -131,19 +125,51 @@ int main(int argc, const char *argv[])
   v2.set(2.0, 0.0, 1.0, 1.0);
   v3.set(2.0, 2.0, 1.0, 1.0);
 
+  Triangle *background;
+
+  Vertex tri1;
+  tri1.set(1000.0, 1000.0, 300.0, 1.0f);
+  Vertex tri2;
+  tri2.set(-10000.0, 10000.0, 300.0, 1.0f);
+  Vertex tri3;
+  tri3.set(-10000.0, -10000.0, 300.0, 1.0f);
+
+  cr = frand(); cg = frand(); cb = frand(); ca = frand();
+
+  m->ka.red = cr * 0.1f;
+  m->ka.green = cg * 0.1f;
+  m->ka.blue = cb * 0.1f;
+  m->kd.red = cr * 0.5f;
+  m->kd.green = cg * 0.5f;
+  m->kd.blue = cb * 0.5f;
+  m->kr.red =  0.0f;
+  m->kr.green = 0.0f;
+  m->kr.blue = 0.0f;
+  m->ks.red = 0.5f;
+  m->ks.green =  0.5f;
+  m->ks.blue = 0.5;
+  m->kt.red = 0.0;
+  m->kt.green = 0.0;
+  m->kt.blue = 0.0;
+  m->n = 400.0;
+
+  background = new Triangle(tri1, tri2, tri3);
+  background->setMaterial(m);
+  scene->addObject(*background);
+
   int i;
   // Add 10 random spheres to the scene
-  for (n = 0; n < 1; n += 1)
+  for (n = 0; n < 5; n += 1)
   {
     Sphere *s;
     Material *m;
     Vertex p;
 
     // position
-    p.set(0.0, 0.0, 1.0, 1.0);
+    p.set(10.0 * frand(), 10.0 * frand(), 200.0 * frand(), 1.0);
 
     // create with random radius
-    s = new Sphere(p, 5.0f);
+    s = new Sphere(p, 2.0f * frand());
 
     // create new material with shared random Ka and Kd
     m = new Material();

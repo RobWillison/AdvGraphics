@@ -115,7 +115,7 @@ Colour Scene::raytrace(Ray &ray, int level)
       reflection.z = xldir.z - 2.0 * (xldir.dot(normal)) * normal.z;
 
       reflection.normalise();
-
+      //printf("%f %f %f\n", reflection.x, reflection.y, reflection.z);
       Vector view;
       Vertex cameraPos = camera->getPosition();
       view.x = cameraPos.x - position.x;
@@ -129,7 +129,7 @@ Colour Scene::raytrace(Ray &ray, int level)
 
       if (reflectionDiff <= -0.0)
       {
-        slc = pow(reflectionDiff, 2);
+        slc = pow(reflectionDiff, 20);
       }
 
 

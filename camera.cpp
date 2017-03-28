@@ -35,14 +35,33 @@ Ray Camera::produceRay(int width, int height, double x, double y)
   viewingRay.P = position;
 
   //45 degrees
-  double fieldOfView = (double) (45 / 2.0f) * (M_PI / 180)
+  double fieldOfView = (double) (45 / 2.0f) * (M_PI / 180);
+  double d = 0.5f;
 
-  Vertex center = position - w * d;
-  Vertex leftBottom = center - u * width/2 - v * height/2;
+  double angleX = fieldOfView * ((x - width/2) / width/2);
+  double angleY = fieldOfView * ((y - height/2) / height/2);
 
-  
+  double distanceU = atan(angleX) * d;
+  double distanceV = atan(angleY) * d;
+
+  Vertex center = position;
+  center.x = center.x - w.x * d;
+  center.y = center.y - w.y * d;
+  center.z = center.z - w.z * d;
+  Vertex pointOnScreen = center;
+
+  pointOnScreen.x = center.x + (u.x * distanceU) + (v.x * distanceV);
+  pointOnScreen.y = center.y + (u.y * distanceU) + (v.y * distanceV);
+  pointOnScreen.z = center.z + (u.z * distanceU) + (v.z * distanceV);
+
+  //printf("%f %f %f\n", pointOnScreen.x, pointOnScreen.y, pointOnScreen.z);
+
+  viewingRay.D.x = - position.x + pointOnScreen.x;
+  viewingRay.D.y = - position.y + pointOnScreen.y;
+  viewingRay.D.z = - position.z + pointOnScreen.z;
 
   viewingRay.D.normalise();
+  //printf("%f %f %f\n", viewingRay.D.x, viewingRay.D.y, viewingRay.D.z);
   //printf("%f %f %f\n",viewingRay.D.x, viewingRay.D.y, viewingRay.D.z);
   return viewingRay;
 }
