@@ -125,14 +125,22 @@ int main(int argc, const char *argv[])
   v2.set(2.0, 0.0, 1.0, 1.0);
   v3.set(2.0, 2.0, 1.0, 1.0);
 
-  Triangle *background;
+  Triangle *background1;
+  Triangle *background2;
 
   Vertex tri1;
-  tri1.set(1000.0, 1000.0, 300.0, 1.0f);
+  tri1.set(100.0, 100.0, 300.0, 1.0f);
   Vertex tri2;
-  tri2.set(-10000.0, 10000.0, 300.0, 1.0f);
+  tri2.set(-100.0, -100.0, 300.0, 1.0f);
   Vertex tri3;
-  tri3.set(-10000.0, -10000.0, 300.0, 1.0f);
+  tri3.set(100.0, -100.0, 300.0, 1.0f);
+  Vertex tri4;
+  tri4.set(100.0, 100.0, 300.0, 1.0f);
+  Vertex tri5;
+  tri5.set(-100.0, 100.0, 300.0, 1.0f);
+  Vertex tri6;
+  tri6.set(-100.0, -100.0, 300.0, 1.0f);
+
 
   cr = frand(); cg = frand(); cb = frand(); ca = frand();
 
@@ -153,9 +161,12 @@ int main(int argc, const char *argv[])
   m->kt.blue = 0.0;
   m->n = 400.0;
 
-  background = new Triangle(tri1, tri2, tri3);
-  background->setMaterial(m);
-  scene->addObject(*background);
+  background1 = new Triangle(tri1, tri2, tri3);
+  background2 = new Triangle(tri4, tri5, tri6);
+  background1->setMaterial(m);
+  background2->setMaterial(m);
+  scene->addObject(*background1);
+  scene->addObject(*background2);
 
   int i;
   // Add 10 random spheres to the scene
@@ -208,7 +219,7 @@ int main(int argc, const char *argv[])
   Vector lookat;
   lookat.set(0.0, 0.0, 1.0);
   Vector up;
-  up.set(0.0, 1.0, 0.0);
+  up.set(1.0, 0.0, 0.0);
 
   Camera *camera = new Camera(position, up, lookat);
 

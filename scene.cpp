@@ -92,13 +92,27 @@ Colour Scene::raytrace(Ray &ray, int level)
       Vector xldir;
       Colour lcol;
 
-      // add shadow test here
-
       // calculate diffuse component
 
       lt->getLightProperties(position, &xldir, &lcol);
-
+      int shadow = 0;
+      Ray shadowRay;
       xldir.normalise();
+      shadowRay.D = xldir;
+      shadowRay.P = hit.p;
+      Hit objHit;
+      obj = obj_list;
+
+      while (obj != (Object *)0)
+      {
+        if(obj->intersect(shadowRay, &objHit) == true)
+        {
+          shadow = 1;
+          obj = obj->next();
+          break;
+        }
+        obj = obj->next();
+      }
 
       float dlc = xldir.dot(normal);
 
@@ -132,6 +146,10 @@ Colour Scene::raytrace(Ray &ray, int level)
         slc = pow(reflectionDiff, 20);
       }
 
+      if (shadow) {
+        dlc = 0.0;
+        slc = 0.0;
+      }
 
       // combine components
 
