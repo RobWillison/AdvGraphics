@@ -31,6 +31,7 @@ bool Triangle::intersect(Ray &ray, Hit *hit)
   double D = - normal.x*vertexs[0].x - normal.y*vertexs[0].y - normal.z*vertexs[0].z;
 
   double divisor = normal.dot(ray.D);
+
   if (divisor == 0.0){
     return false;
   }
@@ -71,6 +72,16 @@ bool Triangle::intersect(Ray &ray, Hit *hit)
 
   hit->n = normal;
   hit->n.normalise();
+
+  //Check point is infornt of Camera
+  Vector inforntCheck;
+  inforntCheck.x = (hit->p.x - ray.P.x) / ray.D.x;
+  inforntCheck.y = (hit->p.y - ray.P.y) / ray.D.y;
+  inforntCheck.z = (hit->p.z - ray.P.z) / ray.D.z;
+
+  float check = inforntCheck.dot(ray.D);
+  
+  if (check < 0) return false;
 
   return true;
 }

@@ -100,8 +100,8 @@ int main(int argc, const char *argv[])
   Vertex ver1;
   Vector vec1;
   Colour cl1;
-  ver1.set(40.0, 0.0, 0.0, 1.0);
-  vec1.set(-0.1, 0.0, 1.0);
+  ver1.set(80.0, 0.0, 0.0, 1.0);
+  vec1.set(-0.2, 0.0, 1.0);
   cl1.set(1.0,1.0,1.0,1.0);
 
   pl1 = new PointLight(ver1, vec1, cl1);

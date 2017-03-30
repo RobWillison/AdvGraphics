@@ -93,13 +93,20 @@ Colour Scene::raytrace(Ray &ray, int level)
       Colour lcol;
 
       // calculate diffuse component
-
       lt->getLightProperties(position, &xldir, &lcol);
       int shadow = 0;
       Ray shadowRay;
       xldir.normalise();
-      shadowRay.D = xldir;
-      shadowRay.P = hit.p;
+
+      shadowRay.D.x = 0;//xldir.x;
+      shadowRay.D.z = -1;//xldir.z;
+      shadowRay.D.y = 0;//xldir.y;
+
+      shadowRay.P = position;
+      shadowRay.P.x = 0;//shadowRay.P.x + 0.01 * shadowRay.D.x;
+      shadowRay.P.y = 0;//shadowRay.P.y + 0.01 * shadowRay.D.y;
+      shadowRay.P.z = 0;//shadowRay.P.z + 0.01 * shadowRay.D.z;
+
       Hit objHit;
       obj = obj_list;
 
@@ -107,12 +114,16 @@ Colour Scene::raytrace(Ray &ray, int level)
       {
         if(obj->intersect(shadowRay, &objHit) == true)
         {
-          shadow = 1;
           obj = obj->next();
+          //Need to check not behind light
+          shadow = 1;
+
+
           break;
         }
         obj = obj->next();
       }
+
 
       float dlc = xldir.dot(normal);
 
