@@ -82,7 +82,7 @@ Colour Camera::antiAliasTrace(int width, int height, int x, int y, Scene *scene)
       yDouble = yDouble + 0.25f;
       Ray ray = produceRay(width, height, xDouble, yDouble);
       // Trace primary ray
-      Colour col = scene->raytrace(ray,6);
+      Colour col = scene->raytrace(ray,2);
       averageCol.red = averageCol.red + col.red;
       averageCol.green = averageCol.green + col.green;
       averageCol.blue = averageCol.blue + col.blue;

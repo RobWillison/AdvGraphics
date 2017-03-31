@@ -98,14 +98,14 @@ Colour Scene::raytrace(Ray &ray, int level)
       Ray shadowRay;
       xldir.normalise();
 
-      shadowRay.D.x = 0;//xldir.x;
-      shadowRay.D.z = -1;//xldir.z;
-      shadowRay.D.y = 0;//xldir.y;
+      shadowRay.D.x = xldir.x;
+      shadowRay.D.z = xldir.z;
+      shadowRay.D.y = xldir.y;
 
       shadowRay.P = position;
-      shadowRay.P.x = 0;//shadowRay.P.x + 0.01 * shadowRay.D.x;
-      shadowRay.P.y = 0;//shadowRay.P.y + 0.01 * shadowRay.D.y;
-      shadowRay.P.z = 0;//shadowRay.P.z + 0.01 * shadowRay.D.z;
+      shadowRay.P.x = shadowRay.P.x + 0.01 * shadowRay.D.x;
+      shadowRay.P.y = shadowRay.P.y + 0.01 * shadowRay.D.y;
+      shadowRay.P.z = shadowRay.P.z + 0.01 * shadowRay.D.z;
 
       Hit objHit;
       obj = obj_list;
@@ -117,8 +117,6 @@ Colour Scene::raytrace(Ray &ray, int level)
           obj = obj->next();
           //Need to check not behind light
           shadow = 1;
-
-
           break;
         }
         obj = obj->next();
@@ -140,7 +138,7 @@ Colour Scene::raytrace(Ray &ray, int level)
       reflection.z = xldir.z - 2.0 * (xldir.dot(normal)) * normal.z;
 
       reflection.normalise();
-      //printf("%f %f %f\n", reflection.x, reflection.y, reflection.z);
+
       Vector view;
       Vertex cameraPos = camera->getPosition();
       view.x = cameraPos.x - position.x;
@@ -149,6 +147,19 @@ Colour Scene::raytrace(Ray &ray, int level)
 
       view.normalise();
       double reflectionDiff = reflection.dot(view);
+
+      Ray viewReflection;
+      viewReflection.P = position;
+
+      viewReflection.D.x = - (view.x - 2.0 * (view.dot(normal)) * normal.x);
+      viewReflection.D.y = - (view.y - 2.0 * (view.dot(normal)) * normal.y);
+      viewReflection.D.z = - (view.z - 2.0 * (view.dot(normal)) * normal.z);
+
+      viewReflection.P.x = viewReflection.P.x + 0.1 * viewReflection.D.x;
+      viewReflection.P.y = viewReflection.P.y + 0.1 * viewReflection.D.y;
+      viewReflection.P.z = viewReflection.P.z + 0.1 * viewReflection.D.z;
+
+      Colour reflectedColour = this->raytrace(viewReflection, level - 1);
 
       float slc = 0.0;
 
@@ -164,9 +175,9 @@ Colour Scene::raytrace(Ray &ray, int level)
 
       // combine components
 
-      col.red += ka.red + lcol.red*(dlc * kd.red + slc * ks.red);
-      col.green += ka.green + lcol.green*(dlc * kd.green + slc * ks.green);
-      col.blue += ka.blue + lcol.blue*(dlc * kd.blue + slc * ks.blue);
+      col.red += ka.red + lcol.red*(dlc * kd.red + slc * ks.red) + (kr.red * reflectedColour.red);
+      col.green += ka.green + lcol.green*(dlc * kd.green + slc * ks.green) + (kr.green * reflectedColour.green);
+      col.blue += ka.blue + lcol.blue*(dlc * kd.blue + slc * ks.blue) + (kr.blue * reflectedColour.blue);
 
       lt = lt->next(); // next light
     }
