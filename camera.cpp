@@ -61,6 +61,8 @@ Ray Camera::produceRay(int width, int height, double x, double y)
   viewingRay.D.z = - position.z + pointOnScreen.z;
 
   viewingRay.D.normalise();
+
+  viewingRay.n = 1;
   //printf("%f %f %f\n", viewingRay.D.x, viewingRay.D.y, viewingRay.D.z);
   //printf("%f %f %f\n",viewingRay.D.x, viewingRay.D.y, viewingRay.D.z);
   return viewingRay;

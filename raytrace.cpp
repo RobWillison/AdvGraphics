@@ -222,19 +222,19 @@ int main(int argc, const char *argv[])
     m->ka.red = cr * 0.1f;
     m->ka.green = cg * 0.1f;
     m->ka.blue = cb * 0.1f;
-    m->kd.red = cr * 0.5f;
-    m->kd.green = cg * 0.5f;
-    m->kd.blue = cb * 0.5f;
-    m->kr.red =  0.5f;
-    m->kr.green = 0.5f;
-    m->kr.blue = 0.5f;
-    m->ks.red = 0.5f;
-    m->ks.green =  0.5f;
-    m->ks.blue = 0.5;
-    m->kt.red = 0.0;
-    m->kt.green = 0.0;
-    m->kt.blue = 0.0;
-    m->n = 400.0;
+    m->kd.red = cr * 0.1f;
+    m->kd.green = cg * 0.1f;
+    m->kd.blue = cb * 0.1f;
+    m->kr.red =  0.1f;
+    m->kr.green = 0.1f;
+    m->kr.blue = 0.1f;
+    m->ks.red = 0.1f;
+    m->ks.green =  0.1f;
+    m->ks.blue = 0.1;
+    m->kt.red = 0.8;
+    m->kt.green = 0.8;
+    m->kt.blue = 0.8;
+    m->n = 2.0;
 
     // set spheres material
     s->setMaterial(m);

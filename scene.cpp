@@ -30,6 +30,73 @@ void Scene::addLight(Light &lt)
   light_list = &lt;
 }
 
+Colour Scene::reflectedRay()
+{
+
+}
+
+Colour Scene::refractedRay(Object &closest, Vertex &position, Ray &ray, Vector &normal, Vector &view, int level)
+{
+  Colour col;
+  col.clear();
+
+  float nRatio = closest.obj_mat->n / ray.n;
+  float thetaI = acos(normal.dot(view));
+
+  float thetaT = 1 - (1 / pow(nRatio, 2) * (1 - pow(cos(thetaI), 2)));
+  if (thetaT < 0.0){
+    return col;
+  }
+  thetaT = sqrt(thetaT);
+
+  //Check total Internal reflection
+
+  Ray T;
+  T.D.x = 1/nRatio * view.x - (cos(thetaT) - (1/nRatio) * cos(thetaI)) * normal.x;
+  T.D.y = 1/nRatio * view.y - (cos(thetaT) - (1/nRatio) * cos(thetaI)) * normal.y;
+  T.D.z = 1/nRatio * view.z - (cos(thetaT) - (1/nRatio) * cos(thetaI)) * normal.z;
+  T.D.normalise();
+
+  T.P = position;
+  T.P.x = T.P.x + 0.1 * T.D.x;
+  T.P.y = T.P.y + 0.1 * T.D.y;
+  T.P.z = T.P.z + 0.1 * T.D.z;
+
+  T.n = closest.obj_mat->n;
+
+  return this->raytrace(T, level - 1);
+}
+
+int Scene::isShadowed(Vector xldir, Vertex position)
+{
+  Ray shadowRay;
+  shadowRay.D.x = xldir.x;
+  shadowRay.D.z = xldir.z;
+  shadowRay.D.y = xldir.y;
+
+  shadowRay.P = position;
+  shadowRay.P.x = shadowRay.P.x + 0.01 * shadowRay.D.x;
+  shadowRay.P.y = shadowRay.P.y + 0.01 * shadowRay.D.y;
+  shadowRay.P.z = shadowRay.P.z + 0.01 * shadowRay.D.z;
+
+  Hit objHit;
+  Object *obj = obj_list;
+
+  while (obj != (Object *)0)
+  {
+    if(obj->intersect(shadowRay, &objHit) == true)
+    {
+      obj = obj->next();
+      //Need to check not behind light
+      return 1;
+    }
+    obj = obj->next();
+  }
+
+  return 0;
+
+}
+
 Colour Scene::raytrace(Ray &ray, int level)
 {
   float ta,t;
@@ -71,7 +138,6 @@ Colour Scene::raytrace(Ray &ray, int level)
   }
 
   col.clear();
-
   if (closest != (Object *)0)
   {
     lt = light_list;
@@ -94,34 +160,10 @@ Colour Scene::raytrace(Ray &ray, int level)
 
       // calculate diffuse component
       lt->getLightProperties(position, &xldir, &lcol);
-      int shadow = 0;
-      Ray shadowRay;
+
       xldir.normalise();
 
-      shadowRay.D.x = xldir.x;
-      shadowRay.D.z = xldir.z;
-      shadowRay.D.y = xldir.y;
-
-      shadowRay.P = position;
-      shadowRay.P.x = shadowRay.P.x + 0.01 * shadowRay.D.x;
-      shadowRay.P.y = shadowRay.P.y + 0.01 * shadowRay.D.y;
-      shadowRay.P.z = shadowRay.P.z + 0.01 * shadowRay.D.z;
-
-      Hit objHit;
-      obj = obj_list;
-
-      while (obj != (Object *)0)
-      {
-        if(obj->intersect(shadowRay, &objHit) == true)
-        {
-          obj = obj->next();
-          //Need to check not behind light
-          shadow = 1;
-          break;
-        }
-        obj = obj->next();
-      }
-
+      int shadow = this->isShadowed(xldir, position);
 
       float dlc = xldir.dot(normal);
 
@@ -168,6 +210,8 @@ Colour Scene::raytrace(Ray &ray, int level)
         slc = pow(reflectionDiff, 20);
       }
 
+      Colour refractedColour = this->refractedRay(*closest, position, ray, normal, view, level);
+
       if (shadow) {
         dlc = 0.0;
         slc = 0.0;
@@ -175,16 +219,12 @@ Colour Scene::raytrace(Ray &ray, int level)
 
       // combine components
 
-      col.red += ka.red + lcol.red*(dlc * kd.red + slc * ks.red) + (kr.red * reflectedColour.red);
-      col.green += ka.green + lcol.green*(dlc * kd.green + slc * ks.green) + (kr.green * reflectedColour.green);
-      col.blue += ka.blue + lcol.blue*(dlc * kd.blue + slc * ks.blue) + (kr.blue * reflectedColour.blue);
+      col.red += ka.red + lcol.red*(dlc * kd.red + slc * ks.red) + (kr.red * reflectedColour.red) + (kt.red * refractedColour.red);
+      col.green += ka.green + lcol.green*(dlc * kd.green + slc * ks.green) + (kr.green * reflectedColour.green) + (kt.green * refractedColour.green);
+      col.blue += ka.blue + lcol.blue*(dlc * kd.blue + slc * ks.blue) + (kr.blue * reflectedColour.blue) + (kt.blue * refractedColour.blue);
 
       lt = lt->next(); // next light
     }
-
-    // add reflected rays here
-
-    // add refracted rays here
   }
 
   return col;
