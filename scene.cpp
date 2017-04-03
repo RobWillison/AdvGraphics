@@ -35,23 +35,35 @@ Colour Scene::reflectedRay()
 
 }
 
-Colour Scene::refractedRay(Object &closest, Vertex &position, Ray &ray, Vector &normal, Vector &view, int level)
+Colour Scene::refractedRay(float closestN, Vertex &position, Ray &ray, Vector &normal, Vector &view, int level)
 {
   Colour col;
   col.clear();
+  Ray T;
+  float nRatio;
 
-  float nRatio = closest.obj_mat->n / ray.n;
-  float thetaI = acos(normal.dot(view));
+  if (ray.n == 1)
+  {
+    nRatio = closestN / ray.n;
+    T.n = closestN;
 
-  float thetaT = 1 - (1 / pow(nRatio, 2) * (1 - pow(cos(thetaI), 2)));
+  } else {
+    nRatio = 1 / ray.n;
+    T.n = 1.0f;
+  }
+
+  float thetaI = acos(normal.dot(ray.D));
+
+  float thetaT = 1.0 - (1.0 / pow(nRatio, 2)) * (1.0 - pow(cos(thetaI), 2));
+  //Check total Internal reflection
+
   if (thetaT < 0.0){
     return col;
   }
-  thetaT = sqrt(thetaT);
 
-  //Check total Internal reflection
+  thetaT = acos(sqrt(thetaT));
 
-  Ray T;
+
   T.D.x = 1/nRatio * view.x - (cos(thetaT) - (1/nRatio) * cos(thetaI)) * normal.x;
   T.D.y = 1/nRatio * view.y - (cos(thetaT) - (1/nRatio) * cos(thetaI)) * normal.y;
   T.D.z = 1/nRatio * view.z - (cos(thetaT) - (1/nRatio) * cos(thetaI)) * normal.z;
@@ -62,9 +74,8 @@ Colour Scene::refractedRay(Object &closest, Vertex &position, Ray &ray, Vector &
   T.P.y = T.P.y + 0.1 * T.D.y;
   T.P.z = T.P.z + 0.1 * T.D.z;
 
-  T.n = closest.obj_mat->n;
-
-  return this->raytrace(T, level - 1);
+  col = this->raytrace(T, level - 1);
+  return col;
 }
 
 int Scene::isShadowed(Vector xldir, Vertex position)
@@ -99,6 +110,7 @@ int Scene::isShadowed(Vector xldir, Vertex position)
 
 Colour Scene::raytrace(Ray &ray, int level)
 {
+
   float ta,t;
   Colour col;
   Object *obj;
@@ -200,6 +212,7 @@ Colour Scene::raytrace(Ray &ray, int level)
       viewReflection.P.x = viewReflection.P.x + 0.1 * viewReflection.D.x;
       viewReflection.P.y = viewReflection.P.y + 0.1 * viewReflection.D.y;
       viewReflection.P.z = viewReflection.P.z + 0.1 * viewReflection.D.z;
+      viewReflection.n = 1.0f;
 
       Colour reflectedColour = this->raytrace(viewReflection, level - 1);
 
@@ -209,8 +222,9 @@ Colour Scene::raytrace(Ray &ray, int level)
       {
         slc = pow(reflectionDiff, 20);
       }
+      float objectN = closest->obj_mat->n;
 
-      Colour refractedColour = this->refractedRay(*closest, position, ray, normal, view, level);
+      Colour refractedColour = this->refractedRay(objectN, position, ray, normal, view, level);
 
       if (shadow) {
         dlc = 0.0;

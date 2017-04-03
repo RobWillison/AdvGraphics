@@ -20,7 +20,7 @@ public:
   bool shadowtrace(Ray &ray, double tlimit);
   int isShadowed(Vector xldir, Vertex position);
   Colour reflectedRay();
-  Colour refractedRay(Object &closest, Vertex &position, Ray &ray, Vector &normal, Vector &view, int level);
+  Colour refractedRay(float closestN, Vertex &position, Ray &ray, Vector &normal, Vector &view, int level);
 };
 
 #endif

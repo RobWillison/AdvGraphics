@@ -14,8 +14,8 @@ using namespace std;
 #include "plyModel.h"
 #include "quadratic.h"
 
-#define XSIZE 1024
-#define YSIZE 1024
+#define XSIZE 512
+#define YSIZE 512
 #define NUM_THREADS 16
 
 Colour frame_buffer[YSIZE][XSIZE];
@@ -174,15 +174,15 @@ int main(int argc, const char *argv[])
 
   cr = frand(); cg = frand(); cb = frand(); ca = frand();
   m = new Material();
-  m->ka.red = cr * 0.1f;
+  m->ka.red = cr * 1.0f;
   m->ka.green = cg * 0.1f;
   m->ka.blue = cb * 0.1f;
-  m->kd.red = cr * 0.5f;
-  m->kd.green = cg * 0.5f;
-  m->kd.blue = cb * 0.5f;
-  m->kr.red =  1.0f;
-  m->kr.green = 1.0f;
-  m->kr.blue = 1.0f;
+  m->kd.red = cr * 0.2f;
+  m->kd.green = cg * 0.2f;
+  m->kd.blue = cb * 0.2f;
+  m->kr.red =  0.3f;
+  m->kr.green = 0.3f;
+  m->kr.blue = 0.3f;
   m->ks.red = 0.5f;
   m->ks.green =  0.5f;
   m->ks.blue = 0.5f;
@@ -191,8 +191,8 @@ int main(int argc, const char *argv[])
   m->kt.blue = 0.0f;
   m->n = 400.0f;
 
-  background1 = new Triangle(tri1, tri2, tri3);
-  background2 = new Triangle(tri4, tri5, tri6);
+  background1 = new Triangle(tri3, tri2, tri1);
+  background2 = new Triangle(tri6, tri5, tri4);
   background1->setMaterial(m);
   background2->setMaterial(m);
   scene->addObject(*background1);
@@ -202,7 +202,7 @@ int main(int argc, const char *argv[])
 
   int i;
   // Add 10 random spheres to the scene
-  for (n = 0; n < 20; n += 1)
+  for (n = 0; n < 1; n += 1)
   {
     Sphere *s;
     Material *m;
@@ -212,29 +212,29 @@ int main(int argc, const char *argv[])
     p.set(5 - 10.0 * frand(),5 -  10.0 * frand(), 100 + 20.0 * frand(), 1.0);
 
     // create with random radius
-    s = new Sphere(p, 3.0f * frand());
+    s = new Sphere(p, 30.0f);
 
     // create new material with shared random Ka and Kd
     m = new Material();
 
     cr = frand(); cg = frand(); cb = frand(); ca = frand();
 
-    m->ka.red = cr * 0.1f;
-    m->ka.green = cg * 0.1f;
-    m->ka.blue = cb * 0.1f;
-    m->kd.red = cr * 0.1f;
-    m->kd.green = cg * 0.1f;
-    m->kd.blue = cb * 0.1f;
-    m->kr.red =  0.1f;
-    m->kr.green = 0.1f;
-    m->kr.blue = 0.1f;
-    m->ks.red = 0.1f;
-    m->ks.green =  0.1f;
-    m->ks.blue = 0.1;
+    m->ka.red = 0.1f;
+    m->ka.green = 0.1f;
+    m->ka.blue = 0.1f;
+    m->kd.red = 0.1f;
+    m->kd.green = 0.1f;
+    m->kd.blue = 0.1f;
+    m->kr.red =  0.6f;
+    m->kr.green = 0.6f;
+    m->kr.blue = 0.6f;
+    m->ks.red = 0.6f;
+    m->ks.green =  0.6f;
+    m->ks.blue = 0.6;
     m->kt.red = 0.8;
     m->kt.green = 0.8;
     m->kt.blue = 0.8;
-    m->n = 2.0;
+    m->n = 2.0f;
 
     // set spheres material
     s->setMaterial(m);

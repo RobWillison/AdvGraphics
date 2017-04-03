@@ -28,7 +28,7 @@ bool Triangle::intersect(Ray &ray, Hit *hit)
 
   Vector normal = a.cross(b);
 
-  double D = - normal.x*vertexs[0].x - normal.y*vertexs[0].y - normal.z*vertexs[0].z;
+  double D =  normal.x*vertexs[0].x + normal.y*vertexs[0].y + normal.z*vertexs[0].z;
 
   double divisor = normal.dot(ray.D);
 
@@ -38,7 +38,7 @@ bool Triangle::intersect(Ray &ray, Hit *hit)
 
   hit->obj = this;
 
-  double intersectPoint = ((normal.x*ray.P.x + normal.y*ray.P.y + normal.z*ray.P.z) + D) * -1.0 / divisor;
+  double intersectPoint = ((normal.x*ray.P.x + normal.y*ray.P.y + normal.z*ray.P.z) + D) * 1.0 / divisor;
   hit->t = intersectPoint;
 
   if (hit->t < 0.0) return false;
@@ -48,7 +48,7 @@ bool Triangle::intersect(Ray &ray, Hit *hit)
   hit->p.z = ray.D.z*intersectPoint + ray.P.z;
 
   Vector tempVec;
-  tempVec.set(hit->p.x - vertexs[0].x, hit->p.y - vertexs[0].y, hit->p.z - vertexs[0].z);
+  tempVec.set(vertexs[0].x - hit->p.x, vertexs[0].y - hit->p.y, vertexs[0].z - hit->p.z);
 
   Vector crossProduct = a.cross(tempVec);
   double length = crossProduct.x + crossProduct.y + crossProduct.z;
@@ -57,7 +57,7 @@ bool Triangle::intersect(Ray &ray, Hit *hit)
     return false;
   }
 
-  tempVec.set(hit->p.x - vertexs[1].x, hit->p.y - vertexs[1].y, hit->p.z - vertexs[1].z);
+  tempVec.set(vertexs[1].x - hit->p.x, vertexs[1].y - hit->p.y, vertexs[1].z - hit->p.z);
   crossProduct = b.cross(tempVec);
   length = crossProduct.x + crossProduct.y + crossProduct.z;
 
@@ -65,7 +65,7 @@ bool Triangle::intersect(Ray &ray, Hit *hit)
     return false;
   }
 
-  tempVec.set(hit->p.x - vertexs[2].x, hit->p.y - vertexs[2].y, hit->p.z - vertexs[2].z);
+  tempVec.set(vertexs[2].x - hit->p.x, vertexs[2].y - hit->p.y, vertexs[2].z - hit->p.z);
   crossProduct = c.cross(tempVec);
   length = crossProduct.x + crossProduct.y + crossProduct.z;
 

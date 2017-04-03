@@ -62,7 +62,7 @@ Ray Camera::produceRay(int width, int height, double x, double y)
 
   viewingRay.D.normalise();
 
-  viewingRay.n = 1;
+  viewingRay.n = 1.0f;
   //printf("%f %f %f\n", viewingRay.D.x, viewingRay.D.y, viewingRay.D.z);
   //printf("%f %f %f\n",viewingRay.D.x, viewingRay.D.y, viewingRay.D.z);
   return viewingRay;
@@ -84,7 +84,7 @@ Colour Camera::antiAliasTrace(int width, int height, int x, int y, Scene *scene)
       yDouble = yDouble + 0.25f;
       Ray ray = produceRay(width, height, xDouble, yDouble);
       // Trace primary ray
-      Colour col = scene->raytrace(ray,2);
+      Colour col = scene->raytrace(ray, 4);
       averageCol.red = averageCol.red + col.red;
       averageCol.green = averageCol.green + col.green;
       averageCol.blue = averageCol.blue + col.blue;

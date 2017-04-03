@@ -6,7 +6,7 @@
 
 class Ray {
  public:
-  int n;
+  float n;
   Vertex P;
   Vector D;
   Vertex position(double t);
