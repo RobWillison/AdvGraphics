@@ -37,6 +37,19 @@ Colour Scene::reflectedRay()
 
 Colour Scene::refractedRay(float closestN, Vertex &position, Ray &ray, Vector &normal, Vector &view, int level)
 {
+  normal.normalise();
+  ray.D.normalise();
+  float test = normal.dot(ray.D);
+
+  if (test > 0.0)
+  {
+    //Normal is pointing the wrong way
+    normal.x = -normal.x;
+    normal.y = -normal.y;
+    normal.z = -normal.z;
+  }
+  printf("Sphere Normal %f %f %f\n", normal.x, normal.y, normal.z);
+
   Colour col;
   col.clear();
   Ray T;
@@ -51,7 +64,7 @@ Colour Scene::refractedRay(float closestN, Vertex &position, Ray &ray, Vector &n
     nRatio = 1 / ray.n;
     T.n = 1.0f;
   }
-
+  printf("%f\n", nRatio);
   float thetaI = acos(normal.dot(ray.D));
 
   float thetaT = 1.0 - (1.0 / pow(nRatio, 2)) * (1.0 - pow(cos(thetaI), 2));
@@ -73,8 +86,10 @@ Colour Scene::refractedRay(float closestN, Vertex &position, Ray &ray, Vector &n
   T.P.x = T.P.x + 0.1 * T.D.x;
   T.P.y = T.P.y + 0.1 * T.D.y;
   T.P.z = T.P.z + 0.1 * T.D.z;
-
+  printf("Refracted Ray %f %f %f\n", T.D.x, T.D.y, T.D.z);
   col = this->raytrace(T, level - 1);
+  printf("Level %d Color %f %f %f\n", level, col.red, col.blue, col.green);
+
   return col;
 }
 
@@ -175,7 +190,7 @@ Colour Scene::raytrace(Ray &ray, int level)
 
       xldir.normalise();
 
-      int shadow = this->isShadowed(xldir, position);
+      int shadow = 0;//this->isShadowed(xldir, position);
 
       float dlc = xldir.dot(normal);
 
@@ -214,8 +229,8 @@ Colour Scene::raytrace(Ray &ray, int level)
       viewReflection.P.z = viewReflection.P.z + 0.1 * viewReflection.D.z;
       viewReflection.n = 1.0f;
 
-      Colour reflectedColour = this->raytrace(viewReflection, level - 1);
-
+      Colour reflectedColour;// = this->raytrace(viewReflection, level - 1);
+      reflectedColour.clear();
       float slc = 0.0;
 
       if (reflectionDiff <= -0.0)

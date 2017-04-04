@@ -63,6 +63,12 @@ Ray Camera::produceRay(int width, int height, double x, double y)
   viewingRay.D.normalise();
 
   viewingRay.n = 1.0f;
+  viewingRay.D.x = 0;
+  viewingRay.D.y = 0;
+  viewingRay.D.z = 1;
+  viewingRay.P.x = 0;
+  viewingRay.P.y = 0;
+  viewingRay.P.z = -1;
   //printf("%f %f %f\n", viewingRay.D.x, viewingRay.D.y, viewingRay.D.z);
   //printf("%f %f %f\n",viewingRay.D.x, viewingRay.D.y, viewingRay.D.z);
   return viewingRay;
@@ -76,10 +82,10 @@ Colour Camera::antiAliasTrace(int width, int height, int x, int y, Scene *scene)
   Colour averageCol;
   averageCol.clear();
 
-  for (int i = 0; i < 4; i++)
+  for (int i = 0; i < 1; i++)
   {
     xDouble = xDouble + 0.25f;
-    for (int j = 0; j < 4; j++)
+    for (int j = 0; j < 1; j++)
     {
       yDouble = yDouble + 0.25f;
       Ray ray = produceRay(width, height, xDouble, yDouble);
@@ -104,8 +110,8 @@ Colour Camera::antiAliasTrace(int width, int height, int x, int y, Scene *scene)
 
 Colour Camera::traceRay(int width, int height, int x, int y, Scene *scene)
 {
-  double xFloat = (double) x;
-  double yFloat = (double) y;
+  double xFloat = (double) x + 0.9;
+  double yFloat = (double) y + 0.9;
 
   Colour col;
 
