@@ -14,9 +14,9 @@ using namespace std;
 #include "plyModel.h"
 #include "quadratic.h"
 
-#define XSIZE 1
-#define YSIZE 1
-#define NUM_THREADS 1
+#define XSIZE 512
+#define YSIZE 512
+#define NUM_THREADS 16
 
 Colour frame_buffer[YSIZE][XSIZE];
 
@@ -159,17 +159,17 @@ int main(int argc, const char *argv[])
   Triangle *background2;
 
   Vertex tri1;
-  tri1.set(100.0, 100.0, 230.0, 1.0f);
+  tri1.set(1000.0, 1000.0, 230.0, 1.0f);
   Vertex tri2;
-  tri2.set(-100.0, -100.0, 230.0, 1.0f);
+  tri2.set(-1000.0, -1000.0, 230.0, 1.0f);
   Vertex tri3;
-  tri3.set(100.0, -100.0, 230.0, 1.0f);
+  tri3.set(1000.0, -1000.0, 230.0, 1.0f);
   Vertex tri4;
-  tri4.set(100.0, 100.0, 230.0, 1.0f);
+  tri4.set(1000.0, 1000.0, 230.0, 1.0f);
   Vertex tri5;
-  tri5.set(-100.0, 100.0, 230.0, 1.0f);
+  tri5.set(-1000.0, 1000.0, 230.0, 1.0f);
   Vertex tri6;
-  tri6.set(-100.0, -100.0, 230.0, 1.0f);
+  tri6.set(-1000.0, -1000.0, 230.0, 1.0f);
 
 
   cr = frand(); cg = frand(); cb = frand(); ca = frand();
@@ -185,12 +185,6 @@ int main(int argc, const char *argv[])
   m->kr.blue = 0.3f;
   m->ks.red = 0.5f;
   m->ks.green =  0.5f;
-  m->ks.blue = 0.5f;
-  m->kt.red = 0.0f;
-  m->kt.green = 0.0f;
-  m->kt.blue = 0.0f;
-  m->n = 400.0f;
-
   background1 = new Triangle(tri3, tri2, tri1);
   background2 = new Triangle(tri6, tri5, tri4);
   background1->setMaterial(m);
@@ -209,7 +203,7 @@ int main(int argc, const char *argv[])
     Vertex p;
 
     // position
-    p.set(5 - 10.0 * frand(),5 -  10.0 * frand(), 100 + 20.0 * frand(), 1.0);
+    p.set(2, 0, 130, 1.0);
 
     // create with random radius
     s = new Sphere(p, 10.0f);

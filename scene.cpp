@@ -41,6 +41,11 @@ Colour Scene::refractedRay(float closestN, Vertex &position, Ray &ray, Vector &n
   ray.D.normalise();
   float test = normal.dot(ray.D);
 
+  Vector insident;
+  insident.x = -ray.D.x;
+  insident.y = -ray.D.y;
+  insident.z = -ray.D.z;
+
   if (test > 0.0)
   {
     //Normal is pointing the wrong way
@@ -48,11 +53,12 @@ Colour Scene::refractedRay(float closestN, Vertex &position, Ray &ray, Vector &n
     normal.y = -normal.y;
     normal.z = -normal.z;
   }
-  printf("Sphere Normal %f %f %f\n", normal.x, normal.y, normal.z);
+  //printf("Sphere Normal %f %f %f\n", normal.x, normal.y, normal.z);
 
   Colour col;
   col.clear();
   Ray T;
+
   float nRatio;
 
   if (ray.n == 1)
@@ -64,31 +70,32 @@ Colour Scene::refractedRay(float closestN, Vertex &position, Ray &ray, Vector &n
     nRatio = 1 / ray.n;
     T.n = 1.0f;
   }
-  printf("%f\n", nRatio);
-  float thetaI = acos(normal.dot(ray.D));
 
-  float thetaT = 1.0 - (1.0 / pow(nRatio, 2)) * (1.0 - pow(cos(thetaI), 2));
+  //printf("%f\n", nRatio);
+  float thetaI = normal.dot(view);
+  //printf("Theta I %f\n", acos(thetaI));
+  float thetaT = 1.0 - (1.0 / pow(nRatio, 2)) * (1.0 - pow(thetaI, 2));
   //Check total Internal reflection
 
   if (thetaT < 0.0){
     return col;
   }
 
-  thetaT = acos(sqrt(thetaT));
-
-
-  T.D.x = 1/nRatio * view.x - (cos(thetaT) - (1/nRatio) * cos(thetaI)) * normal.x;
-  T.D.y = 1/nRatio * view.y - (cos(thetaT) - (1/nRatio) * cos(thetaI)) * normal.y;
-  T.D.z = 1/nRatio * view.z - (cos(thetaT) - (1/nRatio) * cos(thetaI)) * normal.z;
+  thetaT = sqrt(thetaT);
+  //printf("Theta T %f\n", acos(thetaT));
+  T.D.x = 1/nRatio * - view.x - (thetaT - (1/nRatio) * thetaI) * normal.x;
+  T.D.y = 1/nRatio * - view.y - (thetaT - (1/nRatio) * thetaI) * normal.y;
+  T.D.z = 1/nRatio * - view.z + ((1/nRatio) * thetaT - thetaT) * normal.z;
+  //printf("Test Test Test %f\n", T.D.z);
   T.D.normalise();
 
   T.P = position;
   T.P.x = T.P.x + 0.1 * T.D.x;
   T.P.y = T.P.y + 0.1 * T.D.y;
   T.P.z = T.P.z + 0.1 * T.D.z;
-  printf("Refracted Ray %f %f %f\n", T.D.x, T.D.y, T.D.z);
+  //printf("Refracted Ray %f %f %f\n", T.D.x, T.D.y, T.D.z);
   col = this->raytrace(T, level - 1);
-  printf("Level %d Color %f %f %f\n", level, col.red, col.blue, col.green);
+  //printf("Level %d Color %f %f %f\n", level, col.red, col.blue, col.green);
 
   return col;
 }
@@ -125,7 +132,6 @@ int Scene::isShadowed(Vector xldir, Vertex position)
 
 Colour Scene::raytrace(Ray &ray, int level)
 {
-
   float ta,t;
   Colour col;
   Object *obj;
