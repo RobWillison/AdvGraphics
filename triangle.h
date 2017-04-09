@@ -6,10 +6,14 @@
 // The triangle object class, extends Object class.
 
 class Triangle: public Object {
-  Vertex vertexs [3];
  public:
+   Vertex vertexs [3];
   Triangle(Vertex &v1, Vertex &v2, Vertex &v3);
+  Triangle();
+  void set(Vertex &v1, Vertex &v2, Vertex &v3);
   bool intersect(Ray &ray, Hit *h);
+  void PositionAt(Vertex &position);
+  void scale(int scale);
 };
 
 #endif

@@ -14,6 +14,48 @@ Triangle::Triangle(Vertex &v1, Vertex &v2, Vertex &v3)
   vertexs[2] = v3;
 }
 
+Triangle::Triangle()
+{
+
+}
+
+void Triangle::PositionAt(Vertex &position)
+{
+  vertexs[0].x = vertexs[0].x + position.x;
+  vertexs[0].y = vertexs[0].y + position.y;
+  vertexs[0].z = vertexs[0].z + position.z;
+
+  vertexs[1].x = vertexs[1].x + position.x;
+  vertexs[1].y = vertexs[1].y + position.y;
+  vertexs[1].z = vertexs[1].z + position.z;
+
+  vertexs[2].x = vertexs[2].x + position.x;
+  vertexs[2].y = vertexs[2].y + position.y;
+  vertexs[2].z = vertexs[2].z + position.z;
+}
+
+void Triangle::scale(int scale)
+{
+  vertexs[0].x = vertexs[0].x * scale;
+  vertexs[0].y = vertexs[0].y * scale;
+  vertexs[0].z = vertexs[0].z * scale;
+
+  vertexs[1].x = vertexs[1].x * scale;
+  vertexs[1].y = vertexs[1].y * scale;
+  vertexs[1].z = vertexs[1].z * scale;
+
+  vertexs[2].x = vertexs[2].x * scale;
+  vertexs[2].y = vertexs[2].y * scale;
+  vertexs[2].z = vertexs[2].z * scale;
+}
+
+void Triangle::set(Vertex &v1, Vertex &v2, Vertex &v3)
+{
+  vertexs[0] = v1;
+  vertexs[1] = v2;
+  vertexs[2] = v3;
+}
+
 // Triangle intersection test
 
 bool Triangle::intersect(Ray &ray, Hit *hit)

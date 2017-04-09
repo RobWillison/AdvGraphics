@@ -8,7 +8,7 @@
 class Quadratic: public Object {
   double *terms;
  public:
-  Quadratic(double equationTerms[9]);
+  Quadratic(double equationTerms[10]);
   bool intersect(Ray &ray, Hit *h);
 };
 
