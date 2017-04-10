@@ -1,21 +1,128 @@
 \documentclass{article}
 
 \usepackage{graphicx}
+\usepackage{float}
+\usepackage{cite}
+\usepackage{url}
 
 \begin{document}
 
 \section{Basic Camera Model}
 
-\begin{figure}
+The basic camera model is implemented inside the camera class. The camera class
+allows the creation of rays for a given pixel. The class first uses the Up and
+Lookat vectors to create an orthogonal basis w, u, v. An field of view is defined
+and then used along with the value for the width, hight and current pixel location
+to calculate the point on the camera screen that corresponds to the top left corner
+of the pixel. Once we have the point on the screen the viewing ray can be calculated
+and returned.\\
+
+In order to implement anti-aliasing for each pixel 16 rays, these are aranged in
+a regular grid across the pixel where each ray is 0.25 pixel widths from the previous.
+The colour values for each of these rays are then averaged to give the anti-aliased
+value. Figure \ref{fig:antialias} shows a raytraced sphere with and without anti-aliasing
+turned on.\\
+
+\begin{figure}[H]
   \begin{center}
-  \includegraphics[width=200px]{Images/basic.png}
+  \includegraphics[width=150px]{Images/antialiasOff.png}
+  \includegraphics[width=150px]{Images/antialiasOn.png}
+  \caption{Sphere raytraced with and without anti-aliasing}
+  \label{fig:antialias}
+  \end{center}
+\end{figure}
+
+\section{Plane \& Triangle Intersection}
+
+For triangle intersection is done in the triangle class. The class takes three
+vertexs as parameters, the three corners of the triangle. This first step in the
+intersection test is to calculate the three vectors which make up the sides
+of the triangle, these are used to get the normal by the application of the
+cross product. \cite{triabgle}.
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=150px]{Images/triangle.png}
   \caption{Basic Camera Model}
   \label{fig:basiccammod}
   \end{center}
 \end{figure}
 
-\section{Plane & Triangle Intersection}
+\section{Quadratic Intersection}
 
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=150px]{Images/quadCylinder.png}
+  \caption{Basic Camera Model}
+  \label{fig:basiccammod}
+  \end{center}
+\end{figure}
 
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=150px]{Images/quadParaboid.png}
+  \caption{Basic Camera Model}
+  \label{fig:basiccammod}
+  \end{center}
+\end{figure}
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=150px]{Images/quadSphere.png}
+  \caption{Basic Camera Model}
+  \label{fig:basiccammod}
+  \end{center}
+\end{figure}
+
+\section{Point Lights}
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=150px]{Images/pointLight.png}
+  \caption{Basic Camera Model}
+  \label{fig:basiccammod}
+  \end{center}
+\end{figure}
+
+\section{Specular Material}
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=150px]{Images/reflectionsOn.png}
+  \caption{Basic Camera Model}
+  \label{fig:basiccammod}
+  \end{center}
+\end{figure}
+0.
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=150px]{Images/reflectionsOff.png}
+  \caption{Basic Camera Model}
+  \label{fig:basiccammod}
+  \end{center}
+\end{figure}
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=150px]{Images/gridSphere.png}
+  \caption{Basic Camera Model}
+  \label{fig:basiccammod}
+  \end{center}
+\end{figure}
+
+\section{Shadows}
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=150px]{Images/shadows.png}
+  \caption{Basic Camera Model}
+  \label{fig:basiccammod}
+  \end{center}
+\end{figure}
+
+\section{Transparent Material}
+
+\bibliographystyle{unsrt}
+\bibliography{ref}
 
 \end{document}

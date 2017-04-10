@@ -14,9 +14,9 @@ using namespace std;
 #include "plyModel.h"
 #include "quadratic.h"
 
-#define XSIZE 256
-#define YSIZE 256
-#define NUM_THREADS 16
+#define XSIZE 1024
+#define YSIZE 1024
+#define NUM_THREADS 8
 
 Colour frame_buffer[YSIZE][XSIZE];
 
@@ -171,18 +171,18 @@ int main(int argc, const char *argv[])
       Triangle *background2;
 
       Vertex tri1;
-      tri1.set(1.0 * i, 1.0 * j, 5.0 * j + 5, 1.0f);
+      tri1.set(1.0 * i, 1.0 * j, 5, 1.0f);
       Vertex tri2;
-      tri2.set(1.0 * i + 1.0, 1.0 * j, 5.0 * j + 5, 1.0f);
+      tri2.set(1.0 * i + 1.0, 1.0 * j, 5, 1.0f);
       Vertex tri3;
-      tri3.set(1.0 * i, 1.0 * j + 1, 5.0 * j + 10, 1.0f);
+      tri3.set(1.0 * i, 1.0 * j + 1, 5, 1.0f);
 
       Vertex tri4;
-      tri4.set(1.0 * i, 1.0 * j + 1, 5.0 * j + 10, 1.0f);
+      tri4.set(1.0 * i, 1.0 * j + 1, 5, 1.0f);
       Vertex tri5;
-      tri5.set(1.0 * i + 1, 1.0 * j, 5.0 * j + 5, 1.0f);
+      tri5.set(1.0 * i + 1, 1.0 * j, 5, 1.0f);
       Vertex tri6;
-      tri6.set(1.0 * i + 1, 1.0 * j + 1, 5.0 * j + 10, 1.0f);
+      tri6.set(1.0 * i + 1, 1.0 * j + 1, 5, 1.0f);
 
       m = new Material();
 
@@ -195,9 +195,9 @@ int main(int argc, const char *argv[])
         m->ka.green = 0.8f;
         m->ka.blue = 0.8f;
       }
-      m->kd.red = 0.6f;
-      m->kd.green = 0.6f;
-      m->kd.blue = 0.6f;
+      m->kd.red = 0.2f;
+      m->kd.green = 0.2f;
+      m->kd.blue = 0.2f;
       m->kr.red =  0.3f;
       m->kr.green = 0.3f;
       m->kr.blue = 0.3f;
@@ -218,22 +218,22 @@ int main(int argc, const char *argv[])
     }
   }
 
-  m->ka.red = 0.4f;
-  m->ka.green = 0.4f;
-  m->ka.blue = 0.4f;
-  m->kd.red = 0.6f;
-  m->kd.green = 0.6f;
-  m->kd.blue = 0.6f;
-  m->kr.red =  0.3f;
-  m->kr.green = 0.3f;
-  m->kr.blue = 0.3f;
-  m->ks.red = 0.4f;
-  m->ks.green =  0.4f;
-  m->ks.blue =  0.4f;
-  m->kt.red = 0.0;
-  m->kt.green = 0.0;
-  m->kt.blue = 0.0;
-  m->n = 400.f;
+  m->ka.red = 0.2f;
+  m->ka.green = 0.2f;
+  m->ka.blue = 0.2;
+  m->kd.red = 0.2f;
+  m->kd.green = 0.2f;
+  m->kd.blue = 0.2f;
+  m->kr.red =  0.2f;
+  m->kr.green = 0.2f;
+  m->kr.blue = 0.2f;
+  m->ks.red = 0.1f;
+  m->ks.green =  0.1f;
+  m->ks.blue =  0.1f;
+  m->kt.red = 0.4;
+  m->kt.green = 0.4;
+  m->kt.blue = 0.4;
+  m->n = 400.0f;
 
 
   //Load Model Into Scene10
@@ -245,7 +245,7 @@ int main(int argc, const char *argv[])
 
   Sphere *sphere;
   Vertex p;
-  p.set(0, 0, 0, 1.0);
+  p.set(0, 0, 0, 5.0);
   sphere = new Sphere(p, 1);
   sphere->setMaterial(m);
 

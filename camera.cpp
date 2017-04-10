@@ -19,6 +19,7 @@ Camera::Camera(Vertex &camPosition, Vector &vUp, Vector &vLookat)
 
 Ray Camera::produceRay(int width, int height, double x, double y)
 {
+  //Create orthogonal basis w, u, v
   Vector w;
   w.x = position.x - lookatVector.x;
   w.y = position.y - lookatVector.y;
@@ -54,23 +55,12 @@ Ray Camera::produceRay(int width, int height, double x, double y)
   pointOnScreen.y = center.y + (u.y * distanceU) + (v.y * distanceV);
   pointOnScreen.z = center.z + (u.z * distanceU) + (v.z * distanceV);
 
-  //printf("%f %f %f\n", pointOnScreen.x, pointOnScreen.y, pointOnScreen.z);
-
   viewingRay.D.x = - position.x + pointOnScreen.x;
   viewingRay.D.y = - position.y + pointOnScreen.y;
   viewingRay.D.z = - position.z + pointOnScreen.z;
 
   viewingRay.D.normalise();
 
-  // viewingRay.n = 1.0f;
-  // viewingRay.D.x = 0;
-  // viewingRay.D.y = 0;
-  // viewingRay.D.z = 1;
-  // viewingRay.P.x = 0;
-  // viewingRay.P.y = 0;
-  // viewingRay.P.z = -1;
-  //printf("%f %f %f\n", viewingRay.D.x, viewingRay.D.y, viewingRay.D.z);
-  //printf("%f %f %f\n",viewingRay.D.x, viewingRay.D.y, viewingRay.D.z);
   return viewingRay;
 }
 
@@ -82,15 +72,15 @@ Colour Camera::antiAliasTrace(int width, int height, int x, int y, Scene *scene)
   Colour averageCol;
   averageCol.clear();
 
-  for (int i = 0; i < 1; i++)
+  for (int i = 0; i < 4; i++)
   {
     xDouble = xDouble + 0.25f;
-    for (int j = 0; j < 1; j++)
+    for (int j = 0; j < 4; j++)
     {
       yDouble = yDouble + 0.25f;
       Ray ray = produceRay(width, height, xDouble, yDouble);
       // Trace primary ray
-      Colour col = scene->raytrace(ray, 5);
+      Colour col = scene->raytrace(ray, 4);
       averageCol.red = averageCol.red + col.red;
       averageCol.green = averageCol.green + col.green;
       averageCol.blue = averageCol.blue + col.blue;

@@ -236,7 +236,7 @@ Colour Scene::raytrace(Ray &ray, int level)
       viewReflection.n = 1.0f;
 
       Colour reflectedColour = this->raytrace(viewReflection, level - 1);
-      
+
       float slc = 0.0;
 
       if (reflectionDiff <= -0.0)
