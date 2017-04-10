@@ -196,7 +196,7 @@ Colour Scene::raytrace(Ray &ray, int level)
 
       xldir.normalise();
 
-      int shadow = 0;//this->isShadowed(xldir, position);
+      int shadow = this->isShadowed(xldir, position);
 
       float dlc = xldir.dot(normal);
 
@@ -235,8 +235,8 @@ Colour Scene::raytrace(Ray &ray, int level)
       viewReflection.P.z = viewReflection.P.z + 0.1 * viewReflection.D.z;
       viewReflection.n = 1.0f;
 
-      Colour reflectedColour;// = this->raytrace(viewReflection, level - 1);
-      reflectedColour.clear();
+      Colour reflectedColour = this->raytrace(viewReflection, level - 1);
+      
       float slc = 0.0;
 
       if (reflectionDiff <= -0.0)

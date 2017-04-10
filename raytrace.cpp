@@ -14,8 +14,8 @@ using namespace std;
 #include "plyModel.h"
 #include "quadratic.h"
 
-#define XSIZE 512
-#define YSIZE 512
+#define XSIZE 256
+#define YSIZE 256
 #define NUM_THREADS 16
 
 Colour frame_buffer[YSIZE][XSIZE];
@@ -98,6 +98,7 @@ void *rayTraceRows(void *args)
     }
 
     float amountDone = (y - arguments->startY) / (float) (arguments->endY - arguments->startY);
+    printf("%f\n", amountDone);
   }
 
   return NULL;
@@ -133,8 +134,8 @@ int main(int argc, const char *argv[])
   Vertex ver1;
   Vector vec1;
   Colour cl1;
-  ver1.set(40.0, 0.0, 30.0, 1.0);
-  vec1.set(-0.2, 0.0, 1.0);
+  ver1.set(0.0, 30.0, 5.0, 1.0);
+  vec1.set(0.0, 6.0, 1.0);
   cl1.set(1.0,1.0,1.0,1.0);
 
   pl1 = new PointLight(ver1, vec1, cl1);
@@ -144,8 +145,14 @@ int main(int argc, const char *argv[])
   Vector vec2;
   Colour cl2;
 
-  scene->addLight(*pl1);
+  ver2.set(00.0, 0.0, 5.0, 1.0);
+  vec2.set(0.0, 0.0, 1.0);
+  cl2.set(1.0,1.0,1.0,1.0);
+
+  pl2 = new PointLight(ver2, vec2, cl2);
+
   //scene->addLight(*pl1);
+  scene->addLight(*pl2);
 
   Sphere *shape;
   Material *m;
@@ -158,94 +165,131 @@ int main(int argc, const char *argv[])
   v2.set(2.0, 0.0, 1.0, 1.0);
   v3.set(2.0, 2.0, 1.0, 1.0);
 
-  Triangle *background1;
-  Triangle *background2;
+  for (int j = -5; j < 5; j++){
+    for (int i = -5; i < 5; i++){
+      Triangle *background1;
+      Triangle *background2;
 
-  Vertex tri1;
-  tri1.set(25.0, 25.0, 230.0, 1.0f);
-  Vertex tri2;
-  tri2.set(15.0, 15.0, 230.0, 1.0f);
-  Vertex tri3;
-  tri3.set(25.0, 15.0, 230.0, 1.0f);
-  Vertex tri4;
-  tri4.set(10.0, 10.0, 230.0, 1.0f);
-  Vertex tri5;
-  tri5.set(-10.0, 10.0, 230.0, 1.0f);
-  Vertex tri6;
-  tri6.set(-10.0, -10.0, 230.0, 1.0f);
+      Vertex tri1;
+      tri1.set(1.0 * i, 1.0 * j, 5.0 * j + 5, 1.0f);
+      Vertex tri2;
+      tri2.set(1.0 * i + 1.0, 1.0 * j, 5.0 * j + 5, 1.0f);
+      Vertex tri3;
+      tri3.set(1.0 * i, 1.0 * j + 1, 5.0 * j + 10, 1.0f);
 
+      Vertex tri4;
+      tri4.set(1.0 * i, 1.0 * j + 1, 5.0 * j + 10, 1.0f);
+      Vertex tri5;
+      tri5.set(1.0 * i + 1, 1.0 * j, 5.0 * j + 5, 1.0f);
+      Vertex tri6;
+      tri6.set(1.0 * i + 1, 1.0 * j + 1, 5.0 * j + 10, 1.0f);
 
-  cr = frand(); cg = frand(); cb = frand(); ca = frand();
-  m = new Material();
-  m->ka.red = cr * 1.0f;
-  m->ka.green = cg * 0.1f;
-  m->ka.blue = cb * 0.1f;
-  m->kd.red = cr * 0.2f;
-  m->kd.green = cg * 0.2f;
-  m->kd.blue = cb * 0.2f;
+      m = new Material();
+
+      m->ka.red = 0.1f;
+      m->ka.green = 0.1f;
+      m->ka.blue = 0.1f;
+      if ( (i + j) % 2 == 0)
+      {
+        m->ka.red = 0.8f;
+        m->ka.green = 0.8f;
+        m->ka.blue = 0.8f;
+      }
+      m->kd.red = 0.6f;
+      m->kd.green = 0.6f;
+      m->kd.blue = 0.6f;
+      m->kr.red =  0.3f;
+      m->kr.green = 0.3f;
+      m->kr.blue = 0.3f;
+      m->ks.red = 0.6f;
+      m->ks.green =  0.6f;
+      m->ks.blue =  0.6f;
+      m->kt.red = 0.0;
+      m->kt.green = 0.0;
+      m->kt.blue = 0.0;
+      m->n = 400.f;
+
+      background1 = new Triangle(tri1, tri3, tri2);
+      background2 = new Triangle(tri4, tri6, tri5);
+      background1->setMaterial(m);
+      background2->setMaterial(m);
+      scene->addObject(*background1);
+      scene->addObject(*background2);
+    }
+  }
+
+  m->ka.red = 0.4f;
+  m->ka.green = 0.4f;
+  m->ka.blue = 0.4f;
+  m->kd.red = 0.6f;
+  m->kd.green = 0.6f;
+  m->kd.blue = 0.6f;
   m->kr.red =  0.3f;
   m->kr.green = 0.3f;
   m->kr.blue = 0.3f;
-  m->ks.red = 0.5f;
-  m->ks.green =  0.5f;
-  m->ks.blue =  0.5f;
-  background1 = new Triangle(tri3, tri2, tri1);
-  background2 = new Triangle(tri6, tri5, tri4);
-  background1->setMaterial(m);
-  background2->setMaterial(m);
-  //scene->addObject(*background1);
-  //scene->addObject(*background2);
+  m->ks.red = 0.4f;
+  m->ks.green =  0.4f;
+  m->ks.blue =  0.4f;
+  m->kt.red = 0.0;
+  m->kt.green = 0.0;
+  m->kt.blue = 0.0;
+  m->n = 400.f;
 
-  //Load Model Into Scene
-  // char filename[] = "Models/bunny.ply";
-  //
-  // Vertex modelPosition;
-  // modelPosition.x = 0;
+
+  //Load Model Into Scene10
   // modelPosition.y = 0;
   // modelPosition.z = 200;
   //
   // PlyModel *model = new PlyModel(filename);
-  // model->AddToScene(scene, m, modelPosition, 200);
+  // model->AddToScene(scene, m, modelPosition, 200
 
-  double terms[] = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, -100.0, -1.0};
+  Sphere *sphere;
+  Vertex p;
+  p.set(0, 0, 0, 1.0);
+  sphere = new Sphere(p, 1);
+  sphere->setMaterial(m);
+
+
+  double terms[] = {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0, 1.0, 0.0, -1.0};
   Quadratic *quadratic = new Quadratic(terms);
   quadratic->setMaterial(m);
 
-  scene->addObject(*quadratic);
+  //scene->addObject(*quadratic);
+  scene->addObject(*sphere);
   int i;
   // Add 10 random spheres to the scene
-  // for (n = 0; n < 1; n += 1)
+  // for (n = 0; n < 10; n += 1)
   // {
   //   Sphere *s;
   //   Material *m;
   //   Vertex p;
   //
   //   // position
-  //   p.set(2, 0, 130, 1.0);
+  //   p.set(5 - 10 * frand(), 5 - 10 * frand(), 100 + 30 * frand(), 1.0);
   //
   //   // create with random radius
-  //   s = new Sphere(p, 10.0f);
+  //   s = new Sphere(p, 5.0f * frand());
   //
   //   // create new material with shared random Ka and Kd
   //   m = new Material();
   //
   //   cr = frand(); cg = frand(); cb = frand(); ca = frand();
   //
-  //   m->ka.red = 0.5f * cr;
-  //   m->ka.green = 0.5f * cg;
-  //   m->ka.blue = 0.5f * cb;
-  //   m->kd.red = 0.1f;
-  //   m->kd.green = 0.1f;
-  //   m->kd.blue = 0.1f;
-  //   m->kr.red =  0.1f;
-  //   m->kr.green = 0.1f;
-  //   m->kr.blue = 0.1f;
-  //   m->ks.red = 0.1f;
-  //   m->ks.green =  0.1f;
-  //   m->ks.blue = 0.1;
-  //   m->kt.red = 0.8;
-  //   m->kt.green = 0.8;
-  //   m->kt.blue = 0.8;
+  //   m->ka.red = 0.2f * cr;
+  //   m->ka.green = 0.2f * cg;
+  //   m->ka.blue = 0.2f * cb;
+  //   m->kd.red = 0.3f * cr;
+  //   m->kd.green = 0.3f * cg;
+  //   m->kd.blue = 0.3f * cb;
+  //   m->kr.red =  0.3f * cr;
+  //   m->kr.green = 0.3f * cg;
+  //   m->kr.blue = 0.3f * cb;
+  //   m->ks.red = 0.3f * cr;
+  //   m->ks.green =  0.3f * cg;
+  //   m->ks.blue = 0.3 * cb;
+  //   m->kt.red = 0.6 * cr;
+  //   m->kt.green = 0.6 * cg;
+  //   m->kt.blue = 0.6  * cb;
   //   m->n = 2.0f;
   //
   //   // set spheres material
@@ -259,11 +303,11 @@ int main(int argc, const char *argv[])
 
   cout << "Raytracing ...\n";
   Vertex position;
-  position.set(0.0, 0.0, -10.0, 1.0);
+  position.set(0.0, 0.0, -20.0, 1.0);
   Vector lookat;
   lookat.set(0.0, 0.0, 1.0);
   Vector up;
-  up.set(1.0, 0.0, 0.0);
+  up.set(0.0, 1.0, 0.0);
 
   Camera *camera = new Camera(position, up, lookat);
 
