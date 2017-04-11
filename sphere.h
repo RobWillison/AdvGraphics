@@ -2,6 +2,7 @@
 #define _SPHERE_H_
 
 #include "object.h"
+#include "AABoundingBox.h"
 
 // The sphere object class, extends Object class.
 
@@ -11,6 +12,7 @@ class Sphere: public Object {
  public:
   Sphere(Vertex &psp, float pr);
   bool intersect(Ray &ray, Hit *h);
+  bool boundingBoxIntersect(AABoundingBox *boundingBox);
 };
 
 #endif

@@ -14,6 +14,28 @@ Sphere::Sphere(Vertex &psp, float pr)
 
 // Sphere intersection test
 
+bool Sphere::boundingBoxIntersect(AABoundingBox *boundingBox)
+{
+  //Check X planes
+
+  double minX = boundingBox->bottomCorner.x;
+  double maxX = boundingBox->topCorner.x;
+
+  if ((minX > sp.x + r) || (maxX < sp.x - r)) return false;
+
+  double minY = boundingBox->bottomCorner.y;
+  double maxY = boundingBox->topCorner.y;
+
+  if ((minY > sp.y + r) || (maxY < sp.y - r)) return false;
+
+  double minZ = boundingBox->bottomCorner.z;
+  double maxZ = boundingBox->topCorner.z;
+
+  if ((minZ > sp.z + r) || (maxZ < sp.z - r)) return false;
+
+  return true;
+}
+
 bool Sphere::intersect(Ray &ray, Hit *hit)
 {
   Vector ro;

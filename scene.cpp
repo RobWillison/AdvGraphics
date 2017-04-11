@@ -264,14 +264,3 @@ Colour Scene::raytrace(Ray &ray, int level)
 
   return col;
 }
-
-
-bool Scene::shadowtrace(Ray &ray, double tlimit)
-{
-  Object *obj;
-  Hit   hit;
-
-  // check for shadow intersections
-
-  return false;
-}

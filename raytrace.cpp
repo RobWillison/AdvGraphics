@@ -13,9 +13,10 @@ using namespace std;
 #include "camera.h"
 #include "plyModel.h"
 #include "quadratic.h"
+#include "octree.h"
 
-#define XSIZE 1024
-#define YSIZE 1024
+#define XSIZE 512
+#define YSIZE 512
 #define NUM_THREADS 8
 
 Colour frame_buffer[YSIZE][XSIZE];
@@ -98,7 +99,7 @@ void *rayTraceRows(void *args)
     }
 
     float amountDone = (y - arguments->startY) / (float) (arguments->endY - arguments->startY);
-    printf("%f\n", amountDone);
+    //printf("%f\n", amountDone);
   }
 
   return NULL;
@@ -165,59 +166,59 @@ int main(int argc, const char *argv[])
   v2.set(2.0, 0.0, 1.0, 1.0);
   v3.set(2.0, 2.0, 1.0, 1.0);
 
-  for (int j = -5; j < 5; j++){
-    for (int i = -5; i < 5; i++){
-      Triangle *background1;
-      Triangle *background2;
-
-      Vertex tri1;
-      tri1.set(1.0 * i, 1.0 * j, 5, 1.0f);
-      Vertex tri2;
-      tri2.set(1.0 * i + 1.0, 1.0 * j, 5, 1.0f);
-      Vertex tri3;
-      tri3.set(1.0 * i, 1.0 * j + 1, 5, 1.0f);
-
-      Vertex tri4;
-      tri4.set(1.0 * i, 1.0 * j + 1, 5, 1.0f);
-      Vertex tri5;
-      tri5.set(1.0 * i + 1, 1.0 * j, 5, 1.0f);
-      Vertex tri6;
-      tri6.set(1.0 * i + 1, 1.0 * j + 1, 5, 1.0f);
-
-      m = new Material();
-
-      m->ka.red = 0.1f;
-      m->ka.green = 0.1f;
-      m->ka.blue = 0.1f;
-      if ( (i + j) % 2 == 0)
-      {
-        m->ka.red = 0.8f;
-        m->ka.green = 0.8f;
-        m->ka.blue = 0.8f;
-      }
-      m->kd.red = 0.2f;
-      m->kd.green = 0.2f;
-      m->kd.blue = 0.2f;
-      m->kr.red =  0.3f;
-      m->kr.green = 0.3f;
-      m->kr.blue = 0.3f;
-      m->ks.red = 0.6f;
-      m->ks.green =  0.6f;
-      m->ks.blue =  0.6f;
-      m->kt.red = 0.0;
-      m->kt.green = 0.0;
-      m->kt.blue = 0.0;
-      m->n = 400.f;
-
-      background1 = new Triangle(tri1, tri3, tri2);
-      background2 = new Triangle(tri4, tri6, tri5);
-      background1->setMaterial(m);
-      background2->setMaterial(m);
-      scene->addObject(*background1);
-      scene->addObject(*background2);
-    }
-  }
-
+  // for (int j = -5; j < 5; j++){
+  //   for (int i = -5; i < 5; i++){
+  //     Triangle *background1;
+  //     Triangle *background2;
+  //
+  //     Vertex tri1;
+  //     tri1.set(1.0 * i, 1.0 * j, 5, 1.0f);
+  //     Vertex tri2;
+  //     tri2.set(1.0 * i + 1.0, 1.0 * j, 5, 1.0f);
+  //     Vertex tri3;
+  //     tri3.set(1.0 * i, 1.0 * j + 1, 5, 1.0f);
+  //
+  //     Vertex tri4;
+  //     tri4.set(1.0 * i, 1.0 * j + 1, 5, 1.0f);
+  //     Vertex tri5;
+  //     tri5.set(1.0 * i + 1, 1.0 * j, 5, 1.0f);
+  //     Vertex tri6;
+  //     tri6.set(1.0 * i + 1, 1.0 * j + 1, 5, 1.0f);
+  //
+  //     m = new Material();
+  //
+  //     m->ka.red = 0.1f;
+  //     m->ka.green = 0.1f;
+  //     m->ka.blue = 0.1f;
+  //     if ( (i + j) % 2 == 0)
+  //     {
+  //       m->ka.red = 0.8f;
+  //       m->ka.green = 0.8f;
+  //       m->ka.blue = 0.8f;
+  //     }
+  //     m->kd.red = 0.2f;
+  //     m->kd.green = 0.2f;
+  //     m->kd.blue = 0.2f;
+  //     m->kr.red =  0.3f;
+  //     m->kr.green = 0.3f;
+  //     m->kr.blue = 0.3f;
+  //     m->ks.red = 0.6f;
+  //     m->ks.green =  0.6f;
+  //     m->ks.blue =  0.6f;
+  //     m->kt.red = 0.0;
+  //     m->kt.green = 0.0;
+  //     m->kt.blue = 0.0;
+  //     m->n = 400.f;
+  //
+  //     background1 = new Triangle(tri1, tri3, tri2);
+  //     background2 = new Triangle(tri4, tri6, tri5);
+  //     background1->setMaterial(m);
+  //     background2->setMaterial(m);
+  //     scene->addObject(*background1);
+  //     scene->addObject(*background2);
+  //   }
+  // }
+  m = new Material();
   m->ka.red = 0.2f;
   m->ka.green = 0.2f;
   m->ka.blue = 0.2;
@@ -302,6 +303,11 @@ int main(int argc, const char *argv[])
   // RAYTRACE SCENE
 
   cout << "Raytracing ...\n";
+  //Get where the top and bottom corners for all objects
+  //Add objects into octree leafs
+  Octree *tree = new Octree(*scene);
+  //Use octree in raytracing
+  cout << "Creating Octreen ...\n";
   Vertex position;
   position.set(0.0, 0.0, -20.0, 1.0);
   Vector lookat;
