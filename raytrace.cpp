@@ -15,8 +15,8 @@ using namespace std;
 #include "quadratic.h"
 #include "octree.h"
 
-#define XSIZE 512
-#define YSIZE 512
+#define XSIZE 256
+#define YSIZE 256
 #define NUM_THREADS 8
 
 Colour frame_buffer[YSIZE][XSIZE];
@@ -99,7 +99,7 @@ void *rayTraceRows(void *args)
     }
 
     float amountDone = (y - arguments->startY) / (float) (arguments->endY - arguments->startY);
-    //printf("%f\n", amountDone);
+    printf("%f\n", amountDone);
   }
 
   return NULL;
@@ -165,7 +165,7 @@ int main(int argc, const char *argv[])
 
   v2.set(2.0, 0.0, 1.0, 1.0);
   v3.set(2.0, 2.0, 1.0, 1.0);
-
+  //
   // for (int j = -5; j < 5; j++){
   //   for (int i = -5; i < 5; i++){
   //     Triangle *background1;
@@ -302,15 +302,16 @@ int main(int argc, const char *argv[])
 
   // RAYTRACE SCENE
 
-  cout << "Raytracing ...\n";
+  cout << "Creating Octree ...\n";
   Vertex topCorner;
   topCorner.set(100, 100, 100, 1);
   Vertex bottomCorner;
   bottomCorner.set(-100, -100, -100, 1);
   //Add objects into octree leafs
-  Octree *tree = new Octree(*scene, topCorner, bottomCorner);
+  scene->createOctree(topCorner, bottomCorner);
   //Use octree in raytracing
-  cout << "Creating Octreen ...\n";
+
+  cout << "Raytracing ...\n";
   Vertex position;
   position.set(0.0, 0.0, -20.0, 1.0);
   Vector lookat;

@@ -3,12 +3,19 @@
 #include "scene.h"
 #include <stdio.h>
 #include "camera.h"
+#include <vector>
 
 Scene::Scene()
 {
   scache = 0;
   obj_list = (Object *)0;
   light_list = (Light *)0;
+}
+
+void Scene::createOctree(Vertex top, Vertex bottom)
+{
+  tree = new Octree();
+  tree->build(obj_list, top, bottom);
 }
 
 void Scene::setCamera(Camera &cam)
@@ -159,9 +166,14 @@ Colour Scene::raytrace(Ray &ray, int level)
   closest = (Object *)0;
   obj = obj_list;
 
-  while (obj != (Object *)0)
+  std::vector<Object*> objects = tree->findObjects(ray);
+
+  bool tested = false;
+  for (int i = 0; i < objects.size(); i++)
   {
-    if(obj->intersect(ray, &hit) == true)
+    if (tested) continue;
+    tested = true;
+    if(objects[i]->intersect(ray, &hit) == true)
     {
       if (hit.t < t)
       {
@@ -171,8 +183,6 @@ Colour Scene::raytrace(Ray &ray, int level)
       	position = hit.p;
       }
     }
-
-    obj = obj->next();
   }
 
   col.clear();

@@ -3,6 +3,7 @@
 
 #include "object.h"
 #include "light.h"
+#include "octree.h"
 
 class Camera;
 
@@ -11,9 +12,11 @@ class Scene {
   Object *obj_list;
   Light  *light_list;
   Camera *camera;
+  Octree *tree;
 public:
   Scene(void);
   void addObject(Object &obj);
+  void createOctree(Vertex top, Vertex bottom);
   void setCamera(Camera &cam);
   void addLight(Light &light);
   Colour raytrace(Ray &ray, int level);

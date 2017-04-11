@@ -17,7 +17,6 @@ Sphere::Sphere(Vertex &psp, float pr)
 bool Sphere::boundingBoxIntersect(AABoundingBox *boundingBox)
 {
   //Check X planes
-
   double minX = boundingBox->bottomCorner.x;
   double maxX = boundingBox->topCorner.x;
 
