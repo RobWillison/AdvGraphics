@@ -5,21 +5,34 @@
 #include "octree.h"
 #include "sphere.h"
 
-Octree::Octree(Scene &scene)
+Octree::Octree(Scene &scene, Vertex sceneTop, Vertex sceneBottom)
 {
   root = new OctreeNode;
-  Vertex t1;
-  t1.set(3, 1, 3, 1);
-  Vertex t2;
-  t2.set(1, -1, 1, 1);
-  AABoundingBox *boundingBox = new AABoundingBox(t1, t2);
+
+  AABoundingBox *boundingBox = new AABoundingBox(sceneTop, sceneBottom);
 
   root->boundingBox = boundingBox;
 
-  this->createTree(root, 1);
+  this->createTree(root, scene, 1);
 }
 
-OctreeNode *Octree::createTree(OctreeNode *parentNode, int limit)
+bool Octree::containsObject(AABoundingBox *boundingBox, Scene &scene)
+{
+  Object *obj = scene.getObjectList();
+
+  while (obj != (Object *)0)
+  {
+    if (obj->boundingBoxIntersect(boundingBox))
+    {
+      return true;
+    }
+    obj = obj->next();
+  }
+
+  return false;
+}
+
+OctreeNode *Octree::createTree(OctreeNode *parentNode, Scene &scene, int limit)
 {
   printf("%d\n", limit);
   if (limit <= 0) return parentNode;
@@ -48,7 +61,8 @@ OctreeNode *Octree::createTree(OctreeNode *parentNode, int limit)
         AABoundingBox *childBox = new AABoundingBox(newTop, newBottom);
         OctreeNode *childNode = new OctreeNode;
         childNode->boundingBox = childBox;
-        this->createTree(childNode, limit - 1);
+
+        if (this->containsObject(childBox, scene)) this->createTree(childNode, scene, limit - 1);
 
         parentNode->childern[count++] = childNode;
       }

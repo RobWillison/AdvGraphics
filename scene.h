@@ -21,6 +21,7 @@ public:
   int isShadowed(Vector xldir, Vertex position);
   Colour reflectedRay();
   Colour refractedRay(float closestN, Vertex &position, Ray &ray, Vector &normal, Vector &view, int level);
+  Object *getObjectList();
 };
 
 #endif

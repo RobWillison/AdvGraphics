@@ -15,8 +15,9 @@ struct OctreeNode
 class Octree {
   OctreeNode *root;
  public:
-  Octree(Scene &scene);
-  OctreeNode *createTree(OctreeNode *parentNode, int limit);
+  Octree(Scene &scene, Vertex sceneTop, Vertex sceneBottom);
+  OctreeNode *createTree(OctreeNode *parentNode, Scene &scene, int limit);
+  bool containsObject(AABoundingBox *boundingBox, Scene &scene);
 };
 
 #endif

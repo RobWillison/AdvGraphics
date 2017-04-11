@@ -303,9 +303,12 @@ int main(int argc, const char *argv[])
   // RAYTRACE SCENE
 
   cout << "Raytracing ...\n";
-  //Get where the top and bottom corners for all objects
+  Vertex topCorner;
+  topCorner.set(100, 100, 100, 1);
+  Vertex bottomCorner;
+  bottomCorner.set(-100, -100, -100, 1);
   //Add objects into octree leafs
-  Octree *tree = new Octree(*scene);
+  Octree *tree = new Octree(*scene, topCorner, bottomCorner);
   //Use octree in raytracing
   cout << "Creating Octreen ...\n";
   Vertex position;

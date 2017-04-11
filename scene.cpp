@@ -16,6 +16,11 @@ void Scene::setCamera(Camera &cam)
   camera = &cam;
 }
 
+Object * Scene::getObjectList()
+{
+  return obj_list;
+}
+
 void Scene::addObject(Object &obj)
 {
 	// add object to list of objects in scene

@@ -9,6 +9,8 @@
 #include "colour.h"
 #include "material.h"
 
+class AABoundingBox;
+
 class Object {
   Object *obj_next;
  public:
@@ -20,6 +22,7 @@ class Object {
   Colour getColour();
   virtual bool intersect(Ray &ray, Hit *h) { return false; } // primary and secondary ray intersections
   virtual bool sintersect(Ray &ray, Hit *h, double tl); // shadow ray intersections
+  virtual bool boundingBoxIntersect(AABoundingBox *boundingBox) { return false; };
 };
 
 #endif
