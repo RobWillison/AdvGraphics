@@ -1,7 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
-#include <math.h>       /* acos */
+#include <math.h>
+#include <time.h>
 #include <pthread.h>
 using namespace std;
 
@@ -15,9 +16,9 @@ using namespace std;
 #include "quadratic.h"
 #include "octree.h"
 
-#define XSIZE 256
-#define YSIZE 256
-#define NUM_THREADS 8
+#define XSIZE 1
+#define YSIZE 1
+#define NUM_THREADS 1
 
 Colour frame_buffer[YSIZE][XSIZE];
 
@@ -109,6 +110,9 @@ void *rayTraceRows(void *args)
 
 int main(int argc, const char *argv[])
 {
+  time_t timerStart;
+  time(&timerStart);
+
   Scene *scene;
   Vertex ver;
   Vector vec;
@@ -256,55 +260,55 @@ int main(int argc, const char *argv[])
   quadratic->setMaterial(m);
 
   //scene->addObject(*quadratic);
-  scene->addObject(*sphere);
+  //scene->addObject(*sphere);
   int i;
-  // Add 10 random spheres to the scene
-  // for (n = 0; n < 10; n += 1)
-  // {
-  //   Sphere *s;
-  //   Material *m;
-  //   Vertex p;
-  //
-  //   // position
-  //   p.set(5 - 10 * frand(), 5 - 10 * frand(), 100 + 30 * frand(), 1.0);
-  //
-  //   // create with random radius
-  //   s = new Sphere(p, 5.0f * frand());
-  //
-  //   // create new material with shared random Ka and Kd
-  //   m = new Material();
-  //
-  //   cr = frand(); cg = frand(); cb = frand(); ca = frand();
-  //
-  //   m->ka.red = 0.2f * cr;
-  //   m->ka.green = 0.2f * cg;
-  //   m->ka.blue = 0.2f * cb;
-  //   m->kd.red = 0.3f * cr;
-  //   m->kd.green = 0.3f * cg;
-  //   m->kd.blue = 0.3f * cb;
-  //   m->kr.red =  0.3f * cr;
-  //   m->kr.green = 0.3f * cg;
-  //   m->kr.blue = 0.3f * cb;
-  //   m->ks.red = 0.3f * cr;
-  //   m->ks.green =  0.3f * cg;
-  //   m->ks.blue = 0.3 * cb;
-  //   m->kt.red = 0.6 * cr;
-  //   m->kt.green = 0.6 * cg;
-  //   m->kt.blue = 0.6  * cb;
-  //   m->n = 2.0f;
-  //
-  //   // set spheres material
-  //   s->setMaterial(m);
-  //
-  //   // as sphere to scene
-  //   scene->addObject(*s);
-  // }
+  //Add 10 random spheres to the scene
+  for (n = 0; n < 50; n += 1)
+  {
+    Sphere *s;
+    Material *m;
+    Vertex p;
+
+    // position
+    p.set(5 - 10 * frand(), 5 - 10 * frand(), 200 + 30 * frand(), 1.0);
+
+    // create with random radius
+    s = new Sphere(p, 3.0f * frand());
+
+    // create new material with shared random Ka and Kd
+    m = new Material();
+
+    cr = frand(); cg = frand(); cb = frand(); ca = frand();
+
+    m->ka.red = 0.2f * cr;
+    m->ka.green = 0.2f * cg;
+    m->ka.blue = 0.2f * cb;
+    m->kd.red = 0.3f * cr;
+    m->kd.green = 0.3f * cg;
+    m->kd.blue = 0.3f * cb;
+    m->kr.red =  0.3f * cr;
+    m->kr.green = 0.3f * cg;
+    m->kr.blue = 0.3f * cb;
+    m->ks.red = 0.3f * cr;
+    m->ks.green =  0.3f * cg;
+    m->ks.blue = 0.3 * cb;
+    m->kt.red = 0.0 * cr;
+    m->kt.green = 0.0 * cg;
+    m->kt.blue = 0.0  * cb;
+    m->n = 400.0f;
+
+    // set spheres material
+    s->setMaterial(m);
+
+    // as sphere to scene
+    scene->addObject(*s);
+  }
 
   // RAYTRACE SCENE
 
   cout << "Creating Octree ...\n";
   Vertex topCorner;
-  topCorner.set(100, 100, 100, 1);
+  topCorner.set(300, 300, 300, 1);
   Vertex bottomCorner;
   bottomCorner.set(-100, -100, -100, 1);
   //Add objects into octree leafs
@@ -355,4 +359,9 @@ int main(int argc, const char *argv[])
   write_framebuffer();
 
   cout << "Done.\n";
+
+  time_t timerEnd;
+  time(&timerEnd);
+  double seconds = difftime(timerEnd,timerStart);
+  printf("%f\n", seconds);
 }

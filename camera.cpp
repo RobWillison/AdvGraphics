@@ -72,10 +72,10 @@ Colour Camera::antiAliasTrace(int width, int height, int x, int y, Scene *scene)
   Colour averageCol;
   averageCol.clear();
 
-  for (int i = 0; i < 4; i++)
+  for (int i = 0; i < 1; i++)
   {
     xDouble = xDouble + 0.25f;
-    for (int j = 0; j < 4; j++)
+    for (int j = 0; j < 1; j++)
     {
       yDouble = yDouble + 0.25f;
       Ray ray = produceRay(width, height, xDouble, yDouble);

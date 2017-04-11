@@ -15,7 +15,7 @@ OctreeNode *Octree::build(Object *obj_list, Vertex sceneTop, Vertex sceneBottom)
   root->boundingBox = boundingBox;
   root->leaf = (OctreeLeaf*)0;
 
-  return this->createTree(root, obj_list, 10);
+  return this->createTree(root, obj_list, 1);
 }
 
 std::vector<Object*> Octree::findObjects(Ray &ray)
@@ -38,6 +38,7 @@ std::vector<Object*> Octree::searchTree(Ray &ray, OctreeNode *node)
     if (node->childern[i] == (OctreeNode*)0) continue;
     if (node->childern[i]->boundingBox->intersect(ray))
     {
+      printf("Bounding Box\n");
       std::vector<Object*> childObjects = this->searchTree(ray, node->childern[i]);
       objects.insert(objects.end(), childObjects.begin(), childObjects.end());
     }

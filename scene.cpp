@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "camera.h"
 #include <vector>
+#include <algorithm>
 
 Scene::Scene()
 {
@@ -167,12 +168,12 @@ Colour Scene::raytrace(Ray &ray, int level)
   obj = obj_list;
 
   std::vector<Object*> objects = tree->findObjects(ray);
+  std::vector<Object*> tested;
 
-  bool tested = false;
   for (int i = 0; i < objects.size(); i++)
   {
-    if (tested) continue;
-    tested = true;
+    if (std::find(tested.begin(), tested.end(), objects[i]) != tested.end()) continue;
+    tested.push_back(objects[i]);
     if(objects[i]->intersect(ray, &hit) == true)
     {
       if (hit.t < t)
@@ -184,6 +185,22 @@ Colour Scene::raytrace(Ray &ray, int level)
       }
     }
   }
+
+  // while (obj != (Object *)0)
+  // {
+  //   if(obj->intersect(ray, &hit) == true)
+  //   {
+  //     if (hit.t < t)
+  //     {
+  //       closest = hit.obj;
+  //       t = hit.t;
+  //       normal = hit.n;
+  //       position = hit.p;
+  //     }
+  //   }
+  //
+  //   obj = obj->next();
+  // }
 
   col.clear();
   if (closest != (Object *)0)
