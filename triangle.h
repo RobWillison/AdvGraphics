@@ -14,6 +14,7 @@ class Triangle: public Object {
   bool intersect(Ray &ray, Hit *h);
   void PositionAt(Vertex &position);
   void scale(int scale);
+  bool boundingBoxIntersect(AABoundingBox *boundingBox);
 };
 
 #endif

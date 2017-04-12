@@ -126,7 +126,22 @@ int Scene::isShadowed(Vector xldir, Vertex position)
   shadowRay.P.y = shadowRay.P.y + 0.01 * shadowRay.D.y;
   shadowRay.P.z = shadowRay.P.z + 0.01 * shadowRay.D.z;
 
+  Hit objHit;
   return tree->testForShadow(shadowRay);
+  // Object *obj = obj_list;
+  //
+  // while (obj != (Object *)0)
+  // {
+  //   if(obj->intersect(shadowRay, &objHit) == true)
+  //   {
+  //     obj = obj->next();
+  //     //Need to check not behind light
+  //     return 1;
+  //   }
+  //   obj = obj->next();
+  // }
+
+  return 0;
 
 }
 

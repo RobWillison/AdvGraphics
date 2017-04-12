@@ -16,7 +16,7 @@ OctreeNode *Octree::build(Object *obj_list, Vertex sceneTop, Vertex sceneBottom)
   root->boundingBox = boundingBox;
   root->leaf = (OctreeLeaf*)0;
 
-  return this->createTree(root, obj_list, 5);
+  return this->createTree(root, obj_list, 3);
 }
 
 void Octree::findObjects(Ray &ray, Hit *hit)

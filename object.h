@@ -8,6 +8,7 @@
 #include "hit.h"
 #include "colour.h"
 #include "material.h"
+#include "AABoundingBox.h"
 
 class AABoundingBox;
 

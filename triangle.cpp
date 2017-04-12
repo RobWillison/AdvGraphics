@@ -56,6 +56,32 @@ void Triangle::set(Vertex &v1, Vertex &v2, Vertex &v3)
   vertexs[2] = v3;
 }
 
+bool Triangle::boundingBoxIntersect(AABoundingBox *boundingBox)
+{
+  //Check intersection with X planes
+  double minX = boundingBox->bottomCorner.x;
+  double maxX = boundingBox->topCorner.x;
+
+  if ((minX > vertexs[0].x) && (minX > vertexs[1].x) && (minX > vertexs[2].x)) return false;
+  if ((maxX < vertexs[0].x) && (maxX < vertexs[1].x) && (maxX < vertexs[2].x)) return false;
+
+  //Check intersection with X planes
+  minX = boundingBox->bottomCorner.y;
+  maxX = boundingBox->topCorner.y;
+
+  if ((minX > vertexs[0].y) && (minX > vertexs[1].y) && (minX > vertexs[2].y)) return false;
+  if ((maxX < vertexs[0].y) && (maxX < vertexs[1].y) && (maxX < vertexs[2].y)) return false;
+
+  //Check intersection with X planes
+  minX = boundingBox->bottomCorner.z;
+  maxX = boundingBox->topCorner.z;
+
+  if ((minX > vertexs[0].z) && (minX > vertexs[1].z) && (minX > vertexs[2].z)) return false;
+  if ((maxX < vertexs[0].z) && (maxX < vertexs[1].z) && (maxX < vertexs[2].z)) return false;
+
+  return true;
+}
+
 // Triangle intersection test
 
 bool Triangle::intersect(Ray &ray, Hit *hit)

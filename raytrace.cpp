@@ -16,8 +16,8 @@ using namespace std;
 #include "quadratic.h"
 #include "octree.h"
 
-#define XSIZE 512
-#define YSIZE 512
+#define XSIZE 256
+#define YSIZE 256
 #define NUM_THREADS 1
 
 Colour frame_buffer[YSIZE][XSIZE];
@@ -169,59 +169,59 @@ int main(int argc, const char *argv[])
 
   v2.set(2.0, 0.0, 1.0, 1.0);
   v3.set(2.0, 2.0, 1.0, 1.0);
-  //
-  // for (int j = -5; j < 5; j++){
-  //   for (int i = -5; i < 5; i++){
-  //     Triangle *background1;
-  //     Triangle *background2;
-  //
-  //     Vertex tri1;
-  //     tri1.set(1.0 * i, 1.0 * j, 5, 1.0f);
-  //     Vertex tri2;
-  //     tri2.set(1.0 * i + 1.0, 1.0 * j, 5, 1.0f);
-  //     Vertex tri3;
-  //     tri3.set(1.0 * i, 1.0 * j + 1, 5, 1.0f);
-  //
-  //     Vertex tri4;
-  //     tri4.set(1.0 * i, 1.0 * j + 1, 5, 1.0f);
-  //     Vertex tri5;
-  //     tri5.set(1.0 * i + 1, 1.0 * j, 5, 1.0f);
-  //     Vertex tri6;
-  //     tri6.set(1.0 * i + 1, 1.0 * j + 1, 5, 1.0f);
-  //
-  //     m = new Material();
-  //
-  //     m->ka.red = 0.1f;
-  //     m->ka.green = 0.1f;
-  //     m->ka.blue = 0.1f;
-  //     if ( (i + j) % 2 == 0)
-  //     {
-  //       m->ka.red = 0.8f;
-  //       m->ka.green = 0.8f;
-  //       m->ka.blue = 0.8f;
-  //     }
-  //     m->kd.red = 0.2f;
-  //     m->kd.green = 0.2f;
-  //     m->kd.blue = 0.2f;
-  //     m->kr.red =  0.3f;
-  //     m->kr.green = 0.3f;
-  //     m->kr.blue = 0.3f;
-  //     m->ks.red = 0.6f;  printf("Test %f %f %f\n", topCorner.x, topCorner.y, topCorner.z);
-  //     m->ks.green =  0.6f;
-  //     m->ks.blue =  0.6f;
-  //     m->kt.red = 0.0;
-  //     m->kt.green = 0.0;
-  //     m->kt.blue = 0.0;
-  //     m->n = 400.f;
-  //
-  //     background1 = new Triangle(tri1, tri3, tri2);
-  //     background2 = new Triangle(tri4, tri6, tri5);
-  //     background1->setMaterial(m);
-  //     background2->setMaterial(m);
-  //     scene->addObject(*background1);
-  //     scene->addObject(*background2);
-  //   }
-  // }
+
+  for (int j = -5; j < 5; j++){
+    for (int i = -5; i < 5; i++){
+      Triangle *background1;
+      Triangle *background2;
+
+      Vertex tri1;
+      tri1.set(1.0 * i, 1.0 * j, 5, 1.0f);
+      Vertex tri2;
+      tri2.set(1.0 * i + 1.0, 1.0 * j, 5, 1.0f);
+      Vertex tri3;
+      tri3.set(1.0 * i, 1.0 * j + 1, 5, 1.0f);
+
+      Vertex tri4;
+      tri4.set(1.0 * i, 1.0 * j + 1, 5, 1.0f);
+      Vertex tri5;
+      tri5.set(1.0 * i + 1, 1.0 * j, 5, 1.0f);
+      Vertex tri6;
+      tri6.set(1.0 * i + 1, 1.0 * j + 1, 5, 1.0f);
+
+      m = new Material();
+
+      m->ka.red = 0.1f;
+      m->ka.green = 0.1f;
+      m->ka.blue = 0.1f;
+      if ( (i + j) % 2 == 0)
+      {
+        m->ka.red = 0.8f;
+        m->ka.green = 0.8f;
+        m->ka.blue = 0.8f;
+      }
+      m->kd.red = 0.2f;
+      m->kd.green = 0.2f;
+      m->kd.blue = 0.2f;
+      m->kr.red =  0.3f;
+      m->kr.green = 0.3f;
+      m->kr.blue = 0.3f;
+      m->ks.red = 0.6f;
+      m->ks.green =  0.6f;
+      m->ks.blue =  0.6f;
+      m->kt.red = 0.0;
+      m->kt.green = 0.0;
+      m->kt.blue = 0.0;
+      m->n = 400.f;
+
+      background1 = new Triangle(tri1, tri3, tri2);
+      background2 = new Triangle(tri4, tri6, tri5);
+      background1->setMaterial(m);
+      background2->setMaterial(m);
+      scene->addObject(*background1);
+      scene->addObject(*background2);
+    }
+  }
   m = new Material();
   m->ka.red = 0.2f;
   m->ka.green = 0.2f;
@@ -250,7 +250,7 @@ int main(int argc, const char *argv[])
 
   Sphere *sphere;
   Vertex p;
-  p.set(0, 0, 0, 5.0);
+  p.set(0, 0, 0, 3.0);
   sphere = new Sphere(p, 1);
   sphere->setMaterial(m);
 
@@ -260,57 +260,57 @@ int main(int argc, const char *argv[])
   quadratic->setMaterial(m);
 
   //scene->addObject(*quadratic);
-  //scene->addObject(*sphere);
+  scene->addObject(*sphere);
   int i;
   //Add 10 random spheres to the scene
-  for (n = 0; n < 20; n += 1)
-  {
-    Sphere *s;
-    Material *m;
-    Vertex p;
-
-    // position
-    p.set(10 - 20 * frand(), 10 - 20 * frand(), 200 + 30 * frand(), 1.0);
-
-    // create with random radius
-    s = new Sphere(p, 3.0f * frand());
-
-    // create new material with shared random Ka and Kd
-    m = new Material();
-
-    cr = frand(); cg = frand(); cb = frand(); ca = frand();
-
-    m->ka.red = 0.2f * cr;
-    m->ka.green = 0.2f * cg;
-    m->ka.blue = 0.2f * cb;
-    m->kd.red = 0.3f * cr;
-    m->kd.green = 0.3f * cg;
-    m->kd.blue = 0.3f * cb;
-    m->kr.red =  0.3f * cr;
-    m->kr.green = 0.3f * cg;
-    m->kr.blue = 0.3f * cb;
-    m->ks.red = 0.3f * cr;
-    m->ks.green =  0.3f * cg;
-    m->ks.blue = 0.3 * cb;
-    m->kt.red = 0.0 * cr;
-    m->kt.green = 0.0 * cg;
-    m->kt.blue = 0.0  * cb;
-    m->n = 400.0f;
-
-    // set spheres material
-    s->setMaterial(m);
-
-    // as sphere to scene
-    scene->addObject(*s);
-  }
+  // for (n = 0; n < 20; n += 1)
+  // {
+  //   Sphere *s;
+  //   Material *m;
+  //   Vertex p;
+  //
+  //   // position
+  //   p.set(10 - 20 * frand(), 10 - 20 * frand(), 200 + 30 * frand(), 1.0);
+  //
+  //   // create with random radius
+  //   s = new Sphere(p, 3.0f * frand());
+  //
+  //   // create new material with shared random Ka and Kd
+  //   m = new Material();
+  //
+  //   cr = frand(); cg = frand(); cb = frand(); ca = frand();
+  //
+  //   m->ka.red = 0.2f * cr;
+  //   m->ka.green = 0.2f * cg;
+  //   m->ka.blue = 0.2f * cb;
+  //   m->kd.red = 0.3f * cr;
+  //   m->kd.green = 0.3f * cg;
+  //   m->kd.blue = 0.3f * cb;
+  //   m->kr.red =  0.3f * cr;
+  //   m->kr.green = 0.3f * cg;
+  //   m->kr.blue = 0.3f * cb;
+  //   m->ks.red = 0.3f * cr;
+  //   m->ks.green =  0.3f * cg;
+  //   m->ks.blue = 0.3 * cb;
+  //   m->kt.red = 0.0 * cr;
+  //   m->kt.green = 0.0 * cg;
+  //   m->kt.blue = 0.0  * cb;
+  //   m->n = 400.0f;
+  //
+  //   // set spheres material
+  //   s->setMaterial(m);
+  //
+  //   // as sphere to scene
+  //   scene->addObject(*s);
+  // }
 
   // RAYTRACE SCENE
 
   cout << "Creating Octree ...\n";
   Vertex topCorner;
-  topCorner.set(50, 50, 300, 1);
+  topCorner.set(5, 5, 10, 1);
   Vertex bottomCorner;
-  bottomCorner.set(-50, -50, 200, 1);
+  bottomCorner.set(-5, -5, 0, 1);
   //Add objects into octree leafs
   scene->createOctree(topCorner, bottomCorner);
   //Use octree in raytracing
