@@ -6,6 +6,7 @@
 
 Octree::Octree(){
   root = new OctreeNode;
+  count = 0;
 }
 
 OctreeNode *Octree::build(Object *obj_list, Vertex sceneTop, Vertex sceneBottom)
@@ -15,36 +16,83 @@ OctreeNode *Octree::build(Object *obj_list, Vertex sceneTop, Vertex sceneBottom)
   root->boundingBox = boundingBox;
   root->leaf = (OctreeLeaf*)0;
 
-  return this->createTree(root, obj_list, 1);
+  return this->createTree(root, obj_list, 5);
 }
 
-std::vector<Object*> Octree::findObjects(Ray &ray)
+void Octree::findObjects(Ray &ray, Hit *hit)
 {
-  std::vector<Object*> objects = this->searchTree(ray, root);
-  return objects;
+  this->searchTree(ray, root, hit);
 }
 
-std::vector<Object*> Octree::searchTree(Ray &ray, OctreeNode *node)
+bool Octree::testForShadow(Ray &ray)
 {
+  bool result = testObjectIntersection(ray, root);
 
+  return result;
+}
+
+bool Octree::testObjectIntersection(Ray &ray, OctreeNode *node)
+{
+  Hit *testHit = new Hit();
   if (node->leaf != (OctreeLeaf*)0)
   {
-    return node->leaf->obj_list;
+    for (int i = 0; i < node->leaf->obj_list.size(); i++)
+    {
+      if(node->leaf->obj_list[i]->intersect(ray, testHit) == true)
+      {
+        return true;
+      }
+    }
+    return false;
   }
-  std::vector<Object*> objects;
+
   //Check the childer which the ray interesects
   for (int i = 0; i < 8; i++)
   {
     if (node->childern[i] == (OctreeNode*)0) continue;
     if (node->childern[i]->boundingBox->intersect(ray))
     {
-      printf("Bounding Box\n");
-      std::vector<Object*> childObjects = this->searchTree(ray, node->childern[i]);
-      objects.insert(objects.end(), childObjects.begin(), childObjects.end());
+      if(this->testObjectIntersection(ray, node->childern[i]))
+      {
+        return true;
+      }
     }
   }
 
-  return objects;
+  return false;
+}
+
+void Octree::searchTree(Ray &ray, OctreeNode *node, Hit *hit)
+{
+  Hit *testHit = new Hit();
+  if (node->leaf != (OctreeLeaf*)0)
+  {
+    for (int i = 0; i < node->leaf->obj_list.size(); i++)
+    {
+      if(node->leaf->obj_list[i]->intersect(ray, testHit) == true)
+      {
+        if (testHit->t < hit->t)
+        {
+        	hit->obj = testHit->obj;
+        	hit->t = testHit->t;
+        	hit->n = testHit->n;
+        	hit->p = testHit->p;
+        }
+      }
+    }
+
+    return;
+  }
+
+  //Check the childer which the ray interesects
+  for (int i = 0; i < 8; i++)
+  {
+    if (node->childern[i] == (OctreeNode*)0) continue;
+    if (node->childern[i]->boundingBox->intersect(ray))
+    {
+      this->searchTree(ray, node->childern[i], hit);
+    }
+  }
 }
 
 bool Octree::containsObject(AABoundingBox *boundingBox, Object *obj_list)

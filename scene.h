@@ -13,6 +13,7 @@ class Scene {
   Light  *light_list;
   Camera *camera;
   Octree *tree;
+  int count;
 public:
   Scene(void);
   void addObject(Object &obj);

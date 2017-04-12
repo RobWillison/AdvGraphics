@@ -14,6 +14,7 @@ class AABoundingBox;
 class Object {
   Object *obj_next;
  public:
+  Ray *lastRay;
   Material *obj_mat;
   Object(void);
   void link(Object *obj);

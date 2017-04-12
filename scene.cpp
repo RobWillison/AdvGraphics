@@ -11,6 +11,7 @@ Scene::Scene()
   scache = 0;
   obj_list = (Object *)0;
   light_list = (Light *)0;
+  count = 0;
 }
 
 void Scene::createOctree(Vertex top, Vertex bottom)
@@ -125,21 +126,7 @@ int Scene::isShadowed(Vector xldir, Vertex position)
   shadowRay.P.y = shadowRay.P.y + 0.01 * shadowRay.D.y;
   shadowRay.P.z = shadowRay.P.z + 0.01 * shadowRay.D.z;
 
-  Hit objHit;
-  Object *obj = obj_list;
-
-  while (obj != (Object *)0)
-  {
-    if(obj->intersect(shadowRay, &objHit) == true)
-    {
-      obj = obj->next();
-      //Need to check not behind light
-      return 1;
-    }
-    obj = obj->next();
-  }
-
-  return 0;
+  return tree->testForShadow(shadowRay);
 
 }
 
@@ -166,24 +153,15 @@ Colour Scene::raytrace(Ray &ray, int level)
   t = 1000000000.0; // a long way aways
   closest = (Object *)0;
   obj = obj_list;
+  hit.t = 1000000000.0;
+  tree->findObjects(ray, &hit);
 
-  std::vector<Object*> objects = tree->findObjects(ray);
-  std::vector<Object*> tested;
-
-  for (int i = 0; i < objects.size(); i++)
+  if (hit.t < 1000000000.0)
   {
-    if (std::find(tested.begin(), tested.end(), objects[i]) != tested.end()) continue;
-    tested.push_back(objects[i]);
-    if(objects[i]->intersect(ray, &hit) == true)
-    {
-      if (hit.t < t)
-      {
-      	closest = hit.obj;
-      	t = hit.t;
-      	normal = hit.n;
-      	position = hit.p;
-      }
-    }
+    closest = hit.obj;
+    t = hit.t;
+    normal = hit.n;
+    position = hit.p;
   }
 
   // while (obj != (Object *)0)

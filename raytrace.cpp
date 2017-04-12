@@ -16,8 +16,8 @@ using namespace std;
 #include "quadratic.h"
 #include "octree.h"
 
-#define XSIZE 1
-#define YSIZE 1
+#define XSIZE 512
+#define YSIZE 512
 #define NUM_THREADS 1
 
 Colour frame_buffer[YSIZE][XSIZE];
@@ -100,7 +100,7 @@ void *rayTraceRows(void *args)
     }
 
     float amountDone = (y - arguments->startY) / (float) (arguments->endY - arguments->startY);
-    printf("%f\n", amountDone);
+    //printf("%f\n", amountDone);
   }
 
   return NULL;
@@ -206,7 +206,7 @@ int main(int argc, const char *argv[])
   //     m->kr.red =  0.3f;
   //     m->kr.green = 0.3f;
   //     m->kr.blue = 0.3f;
-  //     m->ks.red = 0.6f;
+  //     m->ks.red = 0.6f;  printf("Test %f %f %f\n", topCorner.x, topCorner.y, topCorner.z);
   //     m->ks.green =  0.6f;
   //     m->ks.blue =  0.6f;
   //     m->kt.red = 0.0;
@@ -263,14 +263,14 @@ int main(int argc, const char *argv[])
   //scene->addObject(*sphere);
   int i;
   //Add 10 random spheres to the scene
-  for (n = 0; n < 50; n += 1)
+  for (n = 0; n < 20; n += 1)
   {
     Sphere *s;
     Material *m;
     Vertex p;
 
     // position
-    p.set(5 - 10 * frand(), 5 - 10 * frand(), 200 + 30 * frand(), 1.0);
+    p.set(10 - 20 * frand(), 10 - 20 * frand(), 200 + 30 * frand(), 1.0);
 
     // create with random radius
     s = new Sphere(p, 3.0f * frand());
@@ -308,9 +308,9 @@ int main(int argc, const char *argv[])
 
   cout << "Creating Octree ...\n";
   Vertex topCorner;
-  topCorner.set(300, 300, 300, 1);
+  topCorner.set(50, 50, 300, 1);
   Vertex bottomCorner;
-  bottomCorner.set(-100, -100, -100, 1);
+  bottomCorner.set(-50, -50, 200, 1);
   //Add objects into octree leafs
   scene->createOctree(topCorner, bottomCorner);
   //Use octree in raytracing

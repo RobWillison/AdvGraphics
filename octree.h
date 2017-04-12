@@ -23,14 +23,17 @@ struct OctreeNode
 
 class Octree {
   OctreeNode *root;
+  int count;
  public:
   Octree();
   OctreeNode *build(Object *obj_list, Vertex sceneTop, Vertex sceneBottom);
   OctreeNode *createTree(OctreeNode *parentNode, Object *object, int limit);
   bool containsObject(AABoundingBox *boundingBox, Object *object);
   std::vector<Object*> getObjects(AABoundingBox *boundingBox, Object *object);
-  std::vector<Object*> findObjects(Ray &ray);
-  std::vector<Object*> searchTree(Ray &ray, OctreeNode *node);
+  void findObjects(Ray &ray, Hit *hit);
+  void searchTree(Ray &ray, OctreeNode *node, Hit *hit);
+  bool testForShadow(Ray &ray);
+  bool testObjectIntersection(Ray &ray, OctreeNode *node);
 };
 
 #endif

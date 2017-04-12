@@ -15,6 +15,7 @@ AABoundingBox::AABoundingBox(Vertex &max, Vertex &min)
 
 bool AABoundingBox::intersect(Ray &ray)
 {
+  //https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-box-intersection
   //Find Min and Max X axis intersections
   double tMinX = (bottomCorner.x - ray.P.x) / ray.D.x;
   double tMaxX = (topCorner.x - ray.P.x) / ray.D.x;
@@ -34,8 +35,8 @@ bool AABoundingBox::intersect(Ray &ray)
   double maxT = tMaxX;
   double minT = tMinX;
 
-  if (maxT < tMaxY) maxT = tMaxY;
-  if (minT > tMinY) minT = tMinY;
+  if (maxT > tMaxY) maxT = tMaxY;
+  if (minT < tMinY) minT = tMinY;
 
 
   //Find Min and Max Z axis intersections
@@ -47,6 +48,11 @@ bool AABoundingBox::intersect(Ray &ray)
   {
     return false;
   }
+
+  if (maxT > tMaxZ) maxT = tMaxZ;
+  if (minT < tMinZ) minT = tMinZ;
+
+  if (maxT <= -0) return false;
 
   return true;
 }
