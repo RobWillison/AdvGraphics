@@ -4,6 +4,8 @@
 \usepackage{float}
 \usepackage{cite}
 \usepackage{url}
+\usepackage{caption}
+\usepackage{subcaption}
 
 \begin{document}
 
@@ -75,32 +77,37 @@ This can then be solved using the quadratic equation, if there are no solutions
 then the ray does not intersect the quadratic surface.
 
 \begin{figure}[H]
-  \begin{center}
-  \includegraphics[width=150px]{Images/quadCylinder.png}
-  \caption{Quadratic Intersection}
-  \label{fig:quadint}
-  \end{center}
-\end{figure}
-
-\begin{figure}[H]
-  \begin{center}
-  \includegraphics[width=150px]{Images/quadParaboid.png}
-  \caption{Basic Camera Model}
-  \label{fig:basiccammod}
-  \end{center}
-\end{figure}
-
-\begin{figure}[H]
-  \begin{center}
-  \includegraphics[width=150px]{Images/quadSphere.png}
-  \caption{Basic Camera Model}
-  \label{fig:basiccammod}
-  \end{center}
+\centering
+\begin{subfigure}{.3\textwidth}
+  \centering
+  \includegraphics[width=100px]{Images/quadCylinder.png}
+  \caption{Cylinder}
+\end{subfigure}%
+\begin{subfigure}{.3\textwidth}
+  \centering
+  \includegraphics[width=100px]{Images/quadParaboid.png}
+  \caption{Paraboid}
+\end{subfigure}
+\begin{subfigure}{.3\textwidth}
+  \centering
+  \includegraphics[width=100px]{Images/quadSphere.png}
+  \caption{Sphere}
+\end{subfigure}
+\caption{Quadratic Surfaces}
+\label{fig:quadsurface}
 \end{figure}
 
 \section{Point Lights}
 
-
+Point lights are implemented in the point\_light.cpp class. The class takes a vertex
+and colour as arguments as well as an optional vector for the direction of the light.
+When a object is checked to get the intensity at a point if there is no direction
+given the intensity of the colour given in the arguments is just returned.
+When a direction has been specified the angle between the light direction and the
+vector from the light to the intersection point is calculated using the dot product.
+If the dot product is negative then the intensity is 0 as the angle is more than
+90 degrees. Otherwise the intensity is scaled by the value of the dot product
+to the power of 0.5 which is a value to control the rate of fall off.
 
 \begin{figure}[H]
   \begin{center}
@@ -112,21 +119,32 @@ then the ray does not intersect the quadratic surface.
 
 \section{Specular Material}
 
+In order to show specular materials part of the intensity at a given location is
+a function of the angle between the light direction and the viewing ray direction
+as defined by the Phong model. First the lights reflection ray is calculated and then
+the dot product between the reflection and the viewing ray is used to scale the
+specular component of the intensity.\\
+The reflection ray of the viewing ray is also computed in order to calculate any
+reflections in the surface. The reflection ray is ray traced in the same way as the
+primary rays and the returned colour is added to the overall intensity with a
+scaling value.
+
 \begin{figure}[H]
-  \begin{center}
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
   \includegraphics[width=150px]{Images/reflectionsOn.png}
-  \caption{Basic Camera Model}
-  \label{fig:basiccammod}
-  \end{center}
-\end{figure}
-0.
-\begin{figure}[H]
-  \begin{center}
+  \caption{With reflection}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
   \includegraphics[width=150px]{Images/reflectionsOff.png}
-  \caption{Basic Camera Model}
-  \label{fig:basiccammod}
-  \end{center}
+  \caption{Without reflection}
+\end{subfigure}
+\caption{Raytraced image with and without reflection rays}
+\label{fig:reflectionrays}
 \end{figure}
+
 
 \begin{figure}[H]
   \begin{center}
@@ -138,6 +156,12 @@ then the ray does not intersect the quadratic surface.
 
 \section{Shadows}
 
+Shadow rays are also computed at each intersection point with each of the lights.
+At an intersection point the ray between the point and each of the lights is computed
+and raytraced in a similar way to the primary rays, however we only care about whether
+there is an intersection before the ray reaches the light. If there is an intersection
+then the component of the intensity of that light is not added to the overall intensity.
+
 \begin{figure}[H]
   \begin{center}
   \includegraphics[width=150px]{Images/shadows.png}
@@ -147,6 +171,13 @@ then the ray does not intersect the quadratic surface.
 \end{figure}
 
 \section{Transparent Material}
+
+In order to raytrace transparent materials the refracted ray must be computed at
+each intersection and raytraced. The refracted ray is computed using Snells law
+and then raytraced the same way as primary rays are. In order to compute the refraction
+ray each object is defined a ratio of speed of light in vacume to the speed in that
+material. The value returned by the raytracing of the refracted ray is
+scaled with the transparency value of the material and added to the overall intensity.
 
 \section{Octree}
 

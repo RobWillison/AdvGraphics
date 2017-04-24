@@ -128,18 +128,6 @@ int Scene::isShadowed(Vector xldir, Vertex position)
 
   Hit objHit;
   return tree->testForShadow(shadowRay);
-  // Object *obj = obj_list;
-  //
-  // while (obj != (Object *)0)
-  // {
-  //   if(obj->intersect(shadowRay, &objHit) == true)
-  //   {
-  //     obj = obj->next();
-  //     //Need to check not behind light
-  //     return 1;
-  //   }
-  //   obj = obj->next();
-  // }
 
   return 0;
 
