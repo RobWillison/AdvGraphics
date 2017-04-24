@@ -44,74 +44,75 @@ void Scene::addLight(Light &lt)
   light_list = &lt;
 }
 
-Colour Scene::reflectedRay()
+float Scene::calculateFresnelKr(Object *closest, Ray &refractedRay, Ray &viewingRay, Vector &normal)
 {
+  float nRatio;
+  if (viewingRay.n == 1)
+  {
+    nRatio = closest->obj_mat->n / viewingRay.n;
+  } else {
+    nRatio = 1 / viewingRay.n;
+  }
 
+  float rPar = (nRatio * normal.dot(viewingRay.D) + normal.dot(refractedRay.D)) / (nRatio * normal.dot(viewingRay.D) - normal.dot(refractedRay.D));
+  float rPer = (normal.dot(viewingRay.D) + nRatio * normal.dot(refractedRay.D)) / (normal.dot(viewingRay.D) - nRatio * normal.dot(refractedRay.D));
+
+  float kr = 0.5 * (pow(rPar, 2) + pow(rPer, 2));
+
+  return kr;
 }
 
-Colour Scene::refractedRay(float closestN, Vertex &position, Ray &ray, Vector &normal, Vector &view, int level)
+Ray Scene::calculateRefractedRay(Object *closest, Vertex &position, Ray &ray, Vector &normal, Vector &view)
 {
   normal.normalise();
   ray.D.normalise();
   float test = normal.dot(ray.D);
+  printf("%f %f\n", ray.D.z, normal.z);
 
-  Vector insident;
-  insident.x = -ray.D.x;
-  insident.y = -ray.D.y;
-  insident.z = -ray.D.z;
+  printf("%f\n", test);
+  Ray T;
+  float nRatio;
 
   if (test > 0.0)
   {
-    //Normal is pointing the wrong way
+    //Normal is pointing the wrong way, leaving object
     normal.x = -normal.x;
     normal.y = -normal.y;
     normal.z = -normal.z;
-  }
-  //printf("Sphere Normal %f %f %f\n", normal.x, normal.y, normal.z);
-
-  Colour col;
-  col.clear();
-  Ray T;
-
-  float nRatio;
-
-  if (ray.n == 1)
-  {
-    nRatio = closestN / ray.n;
-    T.n = closestN;
-
-  } else {
     nRatio = 1 / ray.n;
     T.n = 1.0f;
+  } else {
+    //Entering object
+    nRatio = closest->obj_mat->n / ray.n;
+    T.n = closest->obj_mat->n;
   }
 
-  //printf("%f\n", nRatio);
   float thetaI = normal.dot(view);
   //printf("Theta I %f\n", acos(thetaI));
   float thetaT = 1.0 - (1.0 / pow(nRatio, 2)) * (1.0 - pow(thetaI, 2));
   //Check total Internal reflection
 
   if (thetaT < 0.0){
-    return col;
+    T.D.x = 0;
+    T.D.y = 0;
+    T.D.z = 0;
+    return T;
   }
 
   thetaT = sqrt(thetaT);
-  //printf("Theta T %f\n", acos(thetaT));
-  T.D.x = 1/nRatio * - view.x - (thetaT - (1/nRatio) * thetaI) * normal.x;
-  T.D.y = 1/nRatio * - view.y - (thetaT - (1/nRatio) * thetaI) * normal.y;
-  T.D.z = 1/nRatio * - view.z + ((1/nRatio) * thetaT - thetaT) * normal.z;
-  //printf("Test Test Test %f\n", T.D.z);
+
+  T.D.x = 1/nRatio * view.x - (thetaT - (1/nRatio) * thetaI) * normal.x;
+  T.D.y = 1/nRatio * view.y - (thetaT - (1/nRatio) * thetaI) * normal.y;
+  T.D.z = 1/nRatio * view.z - (thetaT - (1/nRatio) * thetaI) * normal.z;
+
   T.D.normalise();
 
   T.P = position;
   T.P.x = T.P.x + 0.1 * T.D.x;
   T.P.y = T.P.y + 0.1 * T.D.y;
   T.P.z = T.P.z + 0.1 * T.D.z;
-  //printf("Refracted Ray %f %f %f\n", T.D.x, T.D.y, T.D.z);
-  col = this->raytrace(T, level - 1);
-  //printf("Level %d Color %f %f %f\n", level, col.red, col.blue, col.green);
 
-  return col;
+  return T;
 }
 
 int Scene::isShadowed(Vector xldir, Vertex position)
@@ -167,23 +168,8 @@ Colour Scene::raytrace(Ray &ray, int level)
     position = hit.p;
   }
 
-  // while (obj != (Object *)0)
-  // {
-  //   if(obj->intersect(ray, &hit) == true)
-  //   {
-  //     if (hit.t < t)
-  //     {
-  //       closest = hit.obj;
-  //       t = hit.t;
-  //       normal = hit.n;
-  //       position = hit.p;
-  //     }
-  //   }
-  //
-  //   obj = obj->next();
-  // }
-
   col.clear();
+
   if (closest != (Object *)0)
   {
     lt = light_list;
@@ -196,7 +182,6 @@ Colour Scene::raytrace(Ray &ray, int level)
     Colour kr = closest->obj_mat->kr;
     Colour kt = closest->obj_mat->kt;
     Ray sray;
-
 
     while (lt != (Light *)0)
     {
@@ -228,10 +213,9 @@ Colour Scene::raytrace(Ray &ray, int level)
       reflection.normalise();
 
       Vector view;
-      Vertex cameraPos = camera->getPosition();
-      view.x = cameraPos.x - position.x;
-      view.y = cameraPos.y - position.y;
-      view.z = cameraPos.z - position.z;
+      view.x = - ray.D.x;
+      view.y = - ray.D.y;
+      view.z = - ray.D.z;
 
       view.normalise();
       double reflectionDiff = reflection.dot(view);
@@ -256,9 +240,28 @@ Colour Scene::raytrace(Ray &ray, int level)
       {
         slc = pow(reflectionDiff, 20);
       }
-      float objectN = closest->obj_mat->n;
 
-      Colour refractedColour = this->refractedRay(objectN, position, ray, normal, view, level);
+      Ray refractedRay = this->calculateRefractedRay(closest, position, ray, normal, view);
+
+      Colour refractedColour;
+      if (refractedRay.D.length() == 0)
+      {
+        refractedColour.clear();
+      } else {
+        refractedColour = this->raytrace(refractedRay, level - 1);
+      }
+
+      float krValue = this->calculateFresnelKr(closest, refractedRay, ray, normal);
+      float ktValue = 1 - krValue;
+
+      // kr.red = kr.red * krValue;
+      // kr.blue = kr.blue * krValue;
+      // kr.green = kr.green * krValue;
+      // kt.red = kt.red * ktValue;
+      // kt.green = kt.green * ktValue;
+      // kt.blue = kt.blue * ktValue;
+
+
 
       if (shadow) {
         dlc = 0.0;
@@ -266,7 +269,6 @@ Colour Scene::raytrace(Ray &ray, int level)
       }
 
       // combine components
-
       col.red += ka.red + lcol.red*(dlc * kd.red + slc * ks.red) + (kr.red * reflectedColour.red) + (kt.red * refractedColour.red);
       col.green += ka.green + lcol.green*(dlc * kd.green + slc * ks.green) + (kr.green * reflectedColour.green) + (kt.green * refractedColour.green);
       col.blue += ka.blue + lcol.blue*(dlc * kd.blue + slc * ks.blue) + (kr.blue * reflectedColour.blue) + (kt.blue * refractedColour.blue);

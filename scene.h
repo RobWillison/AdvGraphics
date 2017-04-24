@@ -23,8 +23,8 @@ public:
   Colour raytrace(Ray &ray, int level);
   bool shadowtrace(Ray &ray, double tlimit);
   int isShadowed(Vector xldir, Vertex position);
-  Colour reflectedRay();
-  Colour refractedRay(float closestN, Vertex &position, Ray &ray, Vector &normal, Vector &view, int level);
+  float calculateFresnelKr(Object *closest, Ray &refractedRay, Ray &viewingRay, Vector &normal);
+  Ray calculateRefractedRay(Object *closest, Vertex &position, Ray &ray, Vector &normal, Vector &view);
   Object *getObjectList();
 };
 

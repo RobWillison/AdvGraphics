@@ -55,9 +55,14 @@ Ray Camera::produceRay(int width, int height, double x, double y)
   pointOnScreen.y = center.y + (u.y * distanceU) + (v.y * distanceV);
   pointOnScreen.z = center.z + (u.z * distanceU) + (v.z * distanceV);
 
-  viewingRay.D.x = - position.x + pointOnScreen.x;
-  viewingRay.D.y = - position.y + pointOnScreen.y;
-  viewingRay.D.z = - position.z + pointOnScreen.z;
+  viewingRay.D.x = 0;//- position.x + pointOnScreen.x;
+  viewingRay.D.y = 0;//- position.y + pointOnScreen.y;
+  viewingRay.D.z = 1;//- position.z + pointOnScreen.z;
+  viewingRay.n = 1.0f;
+
+  viewingRay.P.x = 0;
+  viewingRay.P.y = 0;
+  viewingRay.P.z = 0;
 
   viewingRay.D.normalise();
 

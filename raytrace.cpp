@@ -18,7 +18,7 @@ using namespace std;
 
 #define XSIZE 256
 #define YSIZE 256
-#define NUM_THREADS 1
+#define NUM_THREADS 4
 
 Colour frame_buffer[YSIZE][XSIZE];
 
@@ -193,12 +193,12 @@ int main(int argc, const char *argv[])
 
       m->ka.red = 0.1f;
       m->ka.green = 0.1f;
-      m->ka.blue = 0.1f;
+      m->ka.blue = 0.8f;
       if ( (i + j) % 2 == 0)
       {
         m->ka.red = 0.8f;
-        m->ka.green = 0.8f;
-        m->ka.blue = 0.8f;
+        m->ka.green = 0.1f;
+        m->ka.blue = 0.1f;
       }
       m->kd.red = 0.2f;
       m->kd.green = 0.2f;
@@ -223,22 +223,22 @@ int main(int argc, const char *argv[])
     }
   }
   m = new Material();
-  m->ka.red = 0.2f;
-  m->ka.green = 0.2f;
-  m->ka.blue = 0.2;
-  m->kd.red = 0.2f;
-  m->kd.green = 0.2f;
-  m->kd.blue = 0.2f;
-  m->kr.red =  0.2f;
-  m->kr.green = 0.2f;
-  m->kr.blue = 0.2f;
-  m->ks.red = 0.1f;
-  m->ks.green =  0.1f;
-  m->ks.blue =  0.1f;
-  m->kt.red = 0.4;
-  m->kt.green = 0.4;
-  m->kt.blue = 0.4;
-  m->n = 400.0f;
+  m->ka.red = 0.0f;
+  m->ka.green = 0.0f;
+  m->ka.blue = 0.0;
+  m->kd.red = 0.0f;
+  m->kd.green = 0.0f;
+  m->kd.blue = 0.0f;
+  m->kr.red =  0.0f;
+  m->kr.green = 0.0f;
+  m->kr.blue = 0.0f;
+  m->ks.red = 0.0f;
+  m->ks.green =  0.0f;
+  m->ks.blue =  0.0f;
+  m->kt.red = 1.0;
+  m->kt.green = 1.0;
+  m->kt.blue = 1.0;
+  m->n = 5.0f;
 
 
   //Load Model Into Scene10
@@ -250,7 +250,7 @@ int main(int argc, const char *argv[])
 
   Sphere *sphere;
   Vertex p;
-  p.set(0, 0, 0, 3.0);
+  p.set(0, 0.4, 0, 3.0);
   sphere = new Sphere(p, 1);
   sphere->setMaterial(m);
 
