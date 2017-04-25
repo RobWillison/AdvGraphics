@@ -17,6 +17,7 @@ bool AABoundingBox::intersect(Ray &ray)
 {
   //https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-box-intersection
   //Find Min and Max X axis intersections
+
   double tMinX = (bottomCorner.x - ray.P.x) / ray.D.x;
   double tMaxX = (topCorner.x - ray.P.x) / ray.D.x;
   if (tMinX > tMaxX) std::swap(tMinX, tMaxX);

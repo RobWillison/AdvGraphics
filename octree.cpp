@@ -69,8 +69,11 @@ void Octree::searchTree(Ray &ray, OctreeNode *node, Hit *hit)
   {
     for (int i = 0; i < node->leaf->obj_list.size(); i++)
     {
-      if(node->leaf->obj_list[i]->intersect(ray, testHit) == true)
+      if (node->leaf->obj_list[i]->lastRay == ray.number) continue;
+
+      if (node->leaf->obj_list[i]->intersect(ray, testHit) == true)
       {
+        node->leaf->obj_list[i]->lastRay = ray.number;
         if (testHit->t < hit->t)
         {
         	hit->obj = testHit->obj;

@@ -96,6 +96,7 @@ bool Sphere::intersect(Ray &ray, Hit *hit)
     hit->n.x = hit->p.x - sp.x;
     hit->n.y = hit->p.y - sp.y;
     hit->n.z = hit->p.z - sp.z;
+
     hit->n.normalise();
 
     return true;
@@ -112,8 +113,6 @@ bool Sphere::intersect(Ray &ray, Hit *hit)
   hit->n.y = hit->p.y - sp.y;
   hit->n.z = hit->p.z - sp.z;
   hit->n.normalise();
-
-  //printf("SPhere - %f %f %f\n", hit->n.x, hit->n.y, hit->n.z);
 
   return true;
 }

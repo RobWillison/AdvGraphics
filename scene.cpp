@@ -46,16 +46,36 @@ void Scene::addLight(Light &lt)
 
 float Scene::calculateFresnelKr(Object *closest, Ray &refractedRay, Ray &viewingRay, Vector &normal)
 {
+
+  float test = normal.dot(viewingRay.D);
   float nRatio;
-  if (viewingRay.n == 1)
+  Vector adjustedNorm;
+
+  if (test > 0.0)
   {
-    nRatio = closest->obj_mat->n / viewingRay.n;
+    adjustedNorm.x = -normal.x;
+    adjustedNorm.y = -normal.y;
+    adjustedNorm.z = -normal.z;
+    //Normal is pointing the wrong way, leaving object
+    nRatio = 1 / closest->obj_mat->n;
   } else {
-    nRatio = 1 / viewingRay.n;
+    adjustedNorm.x = normal.x;
+    adjustedNorm.y = normal.y;
+    adjustedNorm.z = normal.z;
+    //Entering object
+    nRatio = closest->obj_mat->n / viewingRay.n;
   }
 
-  float rPar = (nRatio * normal.dot(viewingRay.D) + normal.dot(refractedRay.D)) / (nRatio * normal.dot(viewingRay.D) - normal.dot(refractedRay.D));
-  float rPer = (normal.dot(viewingRay.D) + nRatio * normal.dot(refractedRay.D)) / (normal.dot(viewingRay.D) - nRatio * normal.dot(refractedRay.D));
+  Vector insident;
+  insident.x = -viewingRay.D.x;
+  insident.y = -viewingRay.D.y;
+  insident.z = -viewingRay.D.z;
+
+  float theataI = adjustedNorm.dot(insident);
+  float theataT = sqrt(pow(adjustedNorm.dot(refractedRay.D), 2));
+
+  float rPar = (nRatio * theataI - theataT) / (nRatio * theataI + theataT);
+  float rPer = (theataI - nRatio * theataT) / (theataI + nRatio * theataT);
 
   float kr = 0.5 * (pow(rPar, 2) + pow(rPer, 2));
 
@@ -64,34 +84,40 @@ float Scene::calculateFresnelKr(Object *closest, Ray &refractedRay, Ray &viewing
 
 Ray Scene::calculateRefractedRay(Object *closest, Vertex &position, Ray &ray, Vector &normal, Vector &view)
 {
+
   normal.normalise();
   ray.D.normalise();
+  ray.D.normalise();
+  Vector adjustedNorm;
   float test = normal.dot(ray.D);
-  printf("%f %f\n", ray.D.z, normal.z);
-
-  printf("%f\n", test);
+  // printf("%f %f\n", ray.D.z, normal.z);
+  //
+  // printf("%f\n", test);
   Ray T;
   float nRatio;
 
   if (test > 0.0)
   {
+    adjustedNorm.x = -normal.x;
+    adjustedNorm.y = -normal.y;
+    adjustedNorm.z = -normal.z;
     //Normal is pointing the wrong way, leaving object
-    normal.x = -normal.x;
-    normal.y = -normal.y;
-    normal.z = -normal.z;
-    nRatio = 1 / ray.n;
+    nRatio = 1 / closest->obj_mat->n;
     T.n = 1.0f;
   } else {
+    adjustedNorm.x = normal.x;
+    adjustedNorm.y = normal.y;
+    adjustedNorm.z = normal.z;
     //Entering object
     nRatio = closest->obj_mat->n / ray.n;
     T.n = closest->obj_mat->n;
   }
 
-  float thetaI = normal.dot(view);
+  float thetaI = normal.dot(ray.D);
   //printf("Theta I %f\n", acos(thetaI));
   float thetaT = 1.0 - (1.0 / pow(nRatio, 2)) * (1.0 - pow(thetaI, 2));
-  //Check total Internal reflection
 
+  //Check total Internal reflection
   if (thetaT < 0.0){
     T.D.x = 0;
     T.D.y = 0;
@@ -101,23 +127,26 @@ Ray Scene::calculateRefractedRay(Object *closest, Vertex &position, Ray &ray, Ve
 
   thetaT = sqrt(thetaT);
 
-  T.D.x = 1/nRatio * view.x - (thetaT - (1/nRatio) * thetaI) * normal.x;
-  T.D.y = 1/nRatio * view.y - (thetaT - (1/nRatio) * thetaI) * normal.y;
-  T.D.z = 1/nRatio * view.z - (thetaT - (1/nRatio) * thetaI) * normal.z;
+  T.D.x = 1/nRatio * ray.D.x - (thetaT - (1/nRatio) * thetaI) * adjustedNorm.x;
+  T.D.y = 1/nRatio * ray.D.y - (thetaT - (1/nRatio) * thetaI) * adjustedNorm.y;
+  T.D.z = 1/nRatio * ray.D.z - (thetaT - (1/nRatio) * thetaI) * adjustedNorm.z;
 
   T.D.normalise();
 
   T.P = position;
-  T.P.x = T.P.x + 0.1 * T.D.x;
-  T.P.y = T.P.y + 0.1 * T.D.y;
-  T.P.z = T.P.z + 0.1 * T.D.z;
-
+  T.P.x = T.P.x + 0.001 * T.D.x;
+  T.P.y = T.P.y + 0.001 * T.D.y;
+  T.P.z = T.P.z + 0.001 * T.D.z;
+  // printf("%f\n", nRatio);
+  // printf("%f %f %f\n", T.D.x, T.D.y, T.D.z);
+  T.number = clock();
   return T;
 }
 
 int Scene::isShadowed(Vector xldir, Vertex position)
 {
   Ray shadowRay;
+  shadowRay.number = clock();
   shadowRay.D.x = xldir.x;
   shadowRay.D.z = xldir.z;
   shadowRay.D.y = xldir.y;
@@ -136,6 +165,7 @@ int Scene::isShadowed(Vector xldir, Vertex position)
 
 Colour Scene::raytrace(Ray &ray, int level)
 {
+
   float ta,t;
   Colour col;
   Object *obj;
@@ -158,6 +188,7 @@ Colour Scene::raytrace(Ray &ray, int level)
   closest = (Object *)0;
   obj = obj_list;
   hit.t = 1000000000.0;
+
   tree->findObjects(ray, &hit);
 
   if (hit.t < 1000000000.0)
@@ -194,7 +225,7 @@ Colour Scene::raytrace(Ray &ray, int level)
 
       xldir.normalise();
 
-      int shadow = this->isShadowed(xldir, position);
+      int shadow = 0;//this->isShadowed(xldir, position);
 
       float dlc = xldir.dot(normal);
 
@@ -222,7 +253,7 @@ Colour Scene::raytrace(Ray &ray, int level)
 
       Ray viewReflection;
       viewReflection.P = position;
-
+      viewReflection.number = clock();
       viewReflection.D.x = - (view.x - 2.0 * (view.dot(normal)) * normal.x);
       viewReflection.D.y = - (view.y - 2.0 * (view.dot(normal)) * normal.y);
       viewReflection.D.z = - (view.z - 2.0 * (view.dot(normal)) * normal.z);
@@ -251,17 +282,18 @@ Colour Scene::raytrace(Ray &ray, int level)
         refractedColour = this->raytrace(refractedRay, level - 1);
       }
 
-      float krValue = this->calculateFresnelKr(closest, refractedRay, ray, normal);
-      float ktValue = 1 - krValue;
+      if (kr.red > 1.0f)
+      {
+        float krValue = this->calculateFresnelKr(closest, refractedRay, ray, normal);
+        float ktValue = 1 - krValue;
 
-      // kr.red = kr.red * krValue;
-      // kr.blue = kr.blue * krValue;
-      // kr.green = kr.green * krValue;
-      // kt.red = kt.red * ktValue;
-      // kt.green = kt.green * ktValue;
-      // kt.blue = kt.blue * ktValue;
-
-
+        kr.red = kr.red * krValue;
+        kr.blue = kr.blue * krValue;
+        kr.green = kr.green * krValue;
+        kt.red = kt.red * ktValue;
+        kt.green = kt.green * ktValue;
+        kt.blue = kt.blue * ktValue;
+      }
 
       if (shadow) {
         dlc = 0.0;

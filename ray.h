@@ -6,6 +6,7 @@
 
 class Ray {
  public:
+  int number;
   float n;
   Vertex P;
   Vector D;

@@ -18,7 +18,7 @@ using namespace std;
 
 #define XSIZE 256
 #define YSIZE 256
-#define NUM_THREADS 4
+#define NUM_THREADS 1
 
 Colour frame_buffer[YSIZE][XSIZE];
 
@@ -193,22 +193,32 @@ int main(int argc, const char *argv[])
 
       m->ka.red = 0.1f;
       m->ka.green = 0.1f;
-      m->ka.blue = 0.8f;
-      if ( (i + j) % 2 == 0)
-      {
-        m->ka.red = 0.8f;
-        m->ka.green = 0.1f;
-        m->ka.blue = 0.1f;
-      }
+      m->ka.blue = 0.2f;
       m->kd.red = 0.2f;
       m->kd.green = 0.2f;
-      m->kd.blue = 0.2f;
-      m->kr.red =  0.3f;
-      m->kr.green = 0.3f;
+      m->kd.blue = 0.4f;
+      m->kr.red =  0.1f;
+      m->kr.green = 0.1f;
       m->kr.blue = 0.3f;
-      m->ks.red = 0.6f;
-      m->ks.green =  0.6f;
-      m->ks.blue =  0.6f;
+      m->ks.red = 0.1f;
+      m->ks.green =  0.1f;
+      m->ks.blue =  0.1f;
+      if ( (i + j) % 2 == 0)
+      {
+        m->ka.red = 0.2f;
+        m->ka.green = 0.1f;
+        m->ka.blue = 0.1f;
+        m->kd.red = 0.4f;
+        m->kd.green = 0.2f;
+        m->kd.blue = 0.2f;
+        m->kr.red =  0.0f;
+        m->kr.green = 0.0f;
+        m->kr.blue = 0.0f;
+        m->ks.red = 0.1f;
+        m->ks.green =  0.1f;
+        m->ks.blue =  0.1f;
+      }
+
       m->kt.red = 0.0;
       m->kt.green = 0.0;
       m->kt.blue = 0.0;
@@ -223,22 +233,22 @@ int main(int argc, const char *argv[])
     }
   }
   m = new Material();
-  m->ka.red = 0.0f;
-  m->ka.green = 0.0f;
-  m->ka.blue = 0.0;
-  m->kd.red = 0.0f;
-  m->kd.green = 0.0f;
-  m->kd.blue = 0.0f;
-  m->kr.red =  0.0f;
-  m->kr.green = 0.0f;
-  m->kr.blue = 0.0f;
-  m->ks.red = 0.0f;
-  m->ks.green =  0.0f;
-  m->ks.blue =  0.0f;
-  m->kt.red = 1.0;
-  m->kt.green = 1.0;
-  m->kt.blue = 1.0;
-  m->n = 5.0f;
+  m->ka.red = 0.1f;
+  m->ka.green = 0.1f;
+  m->ka.blue = 0.1;
+  m->kd.red = 0.1f;
+  m->kd.green = 0.1f;
+  m->kd.blue = 0.1f;
+  m->kr.red =  0.1f;
+  m->kr.green = 0.1f;
+  m->kr.blue = 0.1f;
+  m->ks.red = 0.2f;
+  m->ks.green =  0.2f;
+  m->ks.blue =  0.2f;
+  m->kt.red = 0.8;
+  m->kt.green = 0.8;
+  m->kt.blue = 0.8;
+  m->n = 2.0f;
 
 
   //Load Model Into Scene10
@@ -250,9 +260,29 @@ int main(int argc, const char *argv[])
 
   Sphere *sphere;
   Vertex p;
-  p.set(0, 0.4, 0, 3.0);
+  p.set(0, 0, 2, 3.0);
   sphere = new Sphere(p, 1);
   sphere->setMaterial(m);
+
+  Vertex planeVer1;
+  planeVer1.set(-1, -1, 0, 1);
+  Vertex planeVer2;
+  planeVer2.set(-1, 1, 0, 1);
+  Vertex planeVer3;
+  planeVer3.set(1, -1, 0, 1);
+  Vertex planeVer4;
+  planeVer4.set(1, 1, 0, 1);
+  Vertex planeVer5;
+  planeVer5.set(1, -1, 0, 1);
+  Vertex planeVer6;
+  planeVer6.set(-1, 1, 0, 1);
+
+  // Triangle *plane = new Triangle(planeVer1, planeVer2, planeVer3);
+  // Triangle *plane2 = new Triangle(planeVer4, planeVer5, planeVer6);
+  // plane->setMaterial(m);
+  // plane2->setMaterial(m);
+  //scene->addObject(*plane);
+  // scene->addObject(*plane2);
 
 
   double terms[] = {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0, 1.0, 0.0, -1.0};

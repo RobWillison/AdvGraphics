@@ -19,7 +19,13 @@ to calculate the point on the camera screen that corresponds to the top left cor
 of the pixel. Once we have the point on the screen the viewing ray can be calculated
 and returned.\\
 
-In order to implement anti-aliasing for each pixel 16 rays, these are aranged in
+In order to create a ray given the x and y pixel locations on the output image
+the angle between the x and y axis that the ray leaves the camera position are
+calculated. Using these angles and the focal length of the camera the location
+the ray passes through the camera plane is found and this point is used to
+computed the viewing rays direction.\\
+
+In order to implement basic anti-aliasing for each pixel 16 rays, these are aranged in
 a regular grid across the pixel where each ray is 0.25 pixel widths from the previous.
 The colour values for each of these rays are then averaged to give the anti-aliased
 value. Figure \ref{fig:antialias} shows a raytraced sphere with and without anti-aliasing
@@ -175,21 +181,59 @@ then the component of the intensity of that light is not added to the overall in
 In order to raytrace transparent materials the refracted ray must be computed at
 each intersection and raytraced. The refracted ray is computed using Snells law
 and then raytraced the same way as primary rays are. In order to compute the refraction
-ray each object is defined a ratio of speed of light in vacume to the speed in that
-material. The value returned by the raytracing of the refracted ray is
-scaled with the transparency value of the material and added to the overall intensity.
+ray each object is defined a ratio of speed of light in vacuum to the speed in that
+material. As the refraction ratio changes depending on whether the ray is exiting
+or entering an object this needs to be computed and can be done by comparing
+the dot product between the normal and the viewing ray.\\
+
+Once the refracted ray has been raytraced the refracted component can be added
+to the pixel value multiplied by a scaling value. Some transparent surfaces
+can have more complex relationships between the transparent and reflective
+scaling values, meaning as the angle between the normal and the viewing ray increases
+the transparent component decreases and the reflective increases. In order to
+compute this the Fresnel equation is used.
+
+\begin{figure}[H]
+  \begin{center}
+  \includegraphics[width=150px]{Images/transparent.png}
+  \caption{Basic Camera Model}
+  \label{fig:octree}
+  \end{center}
+\end{figure}
 
 \section{Octree}
+
+In order to improve the performance of the raytracer an octree was implemented.
+This consists of breaking the scene down into a set of axis aligned bounding
+boxes. The boxes make up a tree with a single outer root box with eight child
+boxes. The tree building algorithm is recursive firstly starting by splitting
+the root box, then its children and so on until the limit of tree depth is
+reached. Each time a box is added to the tree all the objects in the scene area
+checked for there intersection with the box. If a box does not contain any objects
+it becomes a node. Once the deptch limit is reached then all nodes have a list
+of objects which are inside compiled.\\
+
+When raytracing a ray intersections with each axis aligned bounding box is computed
+and the tree is searched for node boxes that the ray passes through. When a
+node box is found that the ray passes through all the objects in that box
+are tested for intersections. To avoid objects which overlap bounding boxes
+being tested twice each object has a property which records the last ray number
+that it was tested with and if this is equal to the current ray the object is
+skipped. Ray numbers are simply the result returned from the clock() function
+when the ray was computed, as the clock function returns the clock ticks since
+program start, this gives a unique value for each ray.\\
+
+This improves performance significantly, the image in figure \ref{fig:octree}
+is a 256 x 256 image and takes 53 seconds to compute without an octree.
+With an octree enables this time is reduced to 9 second.
 
 \begin{figure}[H]
   \begin{center}
   \includegraphics[width=150px]{Images/octreeTest.png}
   \caption{Basic Camera Model}
-  \label{fig:basiccammod}
+  \label{fig:octree}
   \end{center}
 \end{figure}
-
-9 seconds with octree, 53 without.
 
 \bibliographystyle{unsrt}
 \bibliography{ref}

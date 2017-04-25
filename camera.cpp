@@ -34,6 +34,7 @@ Ray Camera::produceRay(int width, int height, double x, double y)
 
   Ray viewingRay;
   viewingRay.P = position;
+  viewingRay.number = clock();
 
   //45 degrees
   double fieldOfView = (double) (45 / 2.0f) * (M_PI / 180);
@@ -55,14 +56,10 @@ Ray Camera::produceRay(int width, int height, double x, double y)
   pointOnScreen.y = center.y + (u.y * distanceU) + (v.y * distanceV);
   pointOnScreen.z = center.z + (u.z * distanceU) + (v.z * distanceV);
 
-  viewingRay.D.x = 0;//- position.x + pointOnScreen.x;
-  viewingRay.D.y = 0;//- position.y + pointOnScreen.y;
-  viewingRay.D.z = 1;//- position.z + pointOnScreen.z;
+  viewingRay.D.x = - position.x + pointOnScreen.x;
+  viewingRay.D.y = - position.y + pointOnScreen.y;
+  viewingRay.D.z = - position.z + pointOnScreen.z;
   viewingRay.n = 1.0f;
-
-  viewingRay.P.x = 0;
-  viewingRay.P.y = 0;
-  viewingRay.P.z = 0;
 
   viewingRay.D.normalise();
 
@@ -85,7 +82,8 @@ Colour Camera::antiAliasTrace(int width, int height, int x, int y, Scene *scene)
       yDouble = yDouble + 0.25f;
       Ray ray = produceRay(width, height, xDouble, yDouble);
       // Trace primary ray
-      Colour col = scene->raytrace(ray, 4);
+
+      Colour col = scene->raytrace(ray, 3);
       averageCol.red = averageCol.red + col.red;
       averageCol.green = averageCol.green + col.green;
       averageCol.blue = averageCol.blue + col.blue;
