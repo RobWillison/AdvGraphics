@@ -90,9 +90,7 @@ Ray Scene::calculateRefractedRay(Object *closest, Vertex &position, Ray &ray, Ve
   ray.D.normalise();
   Vector adjustedNorm;
   float test = normal.dot(ray.D);
-  // printf("%f %f\n", ray.D.z, normal.z);
-  //
-  // printf("%f\n", test);
+
   Ray T;
   float nRatio;
 
@@ -132,13 +130,12 @@ Ray Scene::calculateRefractedRay(Object *closest, Vertex &position, Ray &ray, Ve
   T.D.z = 1/nRatio * ray.D.z - (thetaT - (1/nRatio) * thetaI) * adjustedNorm.z;
 
   T.D.normalise();
-
+  //Move little way off
   T.P = position;
   T.P.x = T.P.x + 0.001 * T.D.x;
   T.P.y = T.P.y + 0.001 * T.D.y;
   T.P.z = T.P.z + 0.001 * T.D.z;
-  // printf("%f\n", nRatio);
-  // printf("%f %f %f\n", T.D.x, T.D.y, T.D.z);
+
   T.number = clock();
   return T;
 }
@@ -150,7 +147,7 @@ int Scene::isShadowed(Vector xldir, Vertex position)
   shadowRay.D.x = xldir.x;
   shadowRay.D.z = xldir.z;
   shadowRay.D.y = xldir.y;
-
+  //Move little way off
   shadowRay.P = position;
   shadowRay.P.x = shadowRay.P.x + 0.01 * shadowRay.D.x;
   shadowRay.P.y = shadowRay.P.y + 0.01 * shadowRay.D.y;
@@ -225,7 +222,7 @@ Colour Scene::raytrace(Ray &ray, int level)
 
       xldir.normalise();
 
-      int shadow = 0;//this->isShadowed(xldir, position);
+      int shadow = this->isShadowed(xldir, position);
 
       float dlc = xldir.dot(normal);
 
@@ -234,7 +231,7 @@ Colour Scene::raytrace(Ray &ray, int level)
 	       dlc = 0.0;
       }
 
-      // calculate specular component here
+      // calculate reflection
       Vector reflection;
 
       reflection.x = xldir.x - 2.0 * (xldir.dot(normal)) * normal.x;
@@ -271,7 +268,7 @@ Colour Scene::raytrace(Ray &ray, int level)
       {
         slc = pow(reflectionDiff, 20);
       }
-
+      //refraction
       Ray refractedRay = this->calculateRefractedRay(closest, position, ray, normal, view);
 
       Colour refractedColour;
@@ -281,7 +278,8 @@ Colour Scene::raytrace(Ray &ray, int level)
       } else {
         refractedColour = this->raytrace(refractedRay, level - 1);
       }
-
+      
+      //If not using simple kr kt
       if (kr.red > 1.0f)
       {
         float krValue = this->calculateFresnelKr(closest, refractedRay, ray, normal);

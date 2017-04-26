@@ -7,6 +7,7 @@
 
 AABoundingBox::AABoundingBox(Vertex &max, Vertex &min)
 {
+  //Define two corners, one with the max x,y,z values and one with the minimum
   topCorner = max;
   bottomCorner = min;
 }
@@ -16,8 +17,11 @@ AABoundingBox::AABoundingBox(Vertex &max, Vertex &min)
 bool AABoundingBox::intersect(Ray &ray)
 {
   //https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-box-intersection
-  //Find Min and Max X axis intersections
+  //Check each axis aligned plane to ssee if the ray intersects within the boxes
+  //bounds
 
+
+  //Find Min and Max X axis intersections
   double tMinX = (bottomCorner.x - ray.P.x) / ray.D.x;
   double tMaxX = (topCorner.x - ray.P.x) / ray.D.x;
   if (tMinX > tMaxX) std::swap(tMinX, tMaxX);
@@ -44,7 +48,7 @@ bool AABoundingBox::intersect(Ray &ray)
   double tMinZ = (bottomCorner.z - ray.P.z) / ray.D.z;
   double tMaxZ = (topCorner.z - ray.P.z) / ray.D.z;
   if (tMinZ > tMaxZ) std::swap(tMinZ, tMaxZ);
-
+  //Check ray intersects Z inside the box
   if ((minT > tMaxZ) || (tMinZ > maxT))
   {
     return false;

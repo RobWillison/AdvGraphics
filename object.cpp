@@ -29,20 +29,3 @@ Colour Object::getColour()
   Colour a;
   return a;
 }
-
-bool Object::sintersect(Ray &ray, Hit *h, double tl)
-{
-  bool res;
-  Hit nh;
-
-  if (this->intersect(ray, &nh) == true) // does the object intersect
-  {
-    if (nh.t > tl) return false; // is the intersection beyond the light position. 
-
-    *h = nh;
-
-    return true; // then return the hit
-  }
-
-  return false;
-}

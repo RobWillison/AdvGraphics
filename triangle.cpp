@@ -85,7 +85,6 @@ bool Triangle::intersect(Ray &ray, Hit *hit)
   hit->p.x = ray.D.x*intersectPoint + ray.P.x;
   hit->p.y = ray.D.y*intersectPoint + ray.P.y;
   hit->p.z = ray.D.z*intersectPoint + ray.P.z;
-  //printf("%f %f %f\n", hit->p.x, hit->p.y, hit->p.z);
 
   Vector tempVec;
   tempVec.set(hit->p.x - vertexs[0].x, hit->p.y - vertexs[0].y, hit->p.z - vertexs[0].z);

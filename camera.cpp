@@ -12,9 +12,6 @@ Camera::Camera(Vertex &camPosition, Vector &vUp, Vector &vLookat)
   lookatVector = vLookat;
   upVector.normalise();
   lookatVector.normalise();
-
-  //Get plane tangential to lookat given distance aways
-  //Calculate windows points
 }
 
 Ray Camera::produceRay(int width, int height, double x, double y)
@@ -31,31 +28,32 @@ Ray Camera::produceRay(int width, int height, double x, double y)
 
   Vector v = w.cross(u);
   v.normalise();
-
+  // Create viewing ray starting at camera position
   Ray viewingRay;
   viewingRay.P = position;
+  //Set ray number, used in the octree
   viewingRay.number = clock();
 
   //45 degrees
   double fieldOfView = (double) (45 / 2.0f) * (M_PI / 180);
   double d = 0.5f;
-
+  //Calculate the x and y angles of the viewing ray
   double angleX = fieldOfView * ((x - width/2) / width/2);
   double angleY = fieldOfView * ((y - height/2) / height/2);
-
+  //Get the distance between center of image plane and plane intersection point
   double distanceU = atan(angleX) * d;
   double distanceV = atan(angleY) * d;
-
+  //Get center point
   Vertex center = position;
   center.x = center.x - w.x * d;
   center.y = center.y - w.y * d;
   center.z = center.z - w.z * d;
   Vertex pointOnScreen = center;
-
+  //Find point on screen
   pointOnScreen.x = center.x + (u.x * distanceU) + (v.x * distanceV);
   pointOnScreen.y = center.y + (u.y * distanceU) + (v.y * distanceV);
   pointOnScreen.z = center.z + (u.z * distanceU) + (v.z * distanceV);
-
+  //Set viewing ray
   viewingRay.D.x = - position.x + pointOnScreen.x;
   viewingRay.D.y = - position.y + pointOnScreen.y;
   viewingRay.D.z = - position.z + pointOnScreen.z;
@@ -74,15 +72,16 @@ Colour Camera::antiAliasTrace(int width, int height, int x, int y, Scene *scene)
   Colour averageCol;
   averageCol.clear();
 
-  for (int i = 0; i < 1; i++)
+  //For 0 to 1 in 0.25 steps in x and y direction
+  for (int i = 0; i < 4; i++)
   {
     xDouble = xDouble + 0.25f;
-    for (int j = 0; j < 1; j++)
+    for (int j = 0; j < 4; j++)
     {
       yDouble = yDouble + 0.25f;
+      //Produce ray
       Ray ray = produceRay(width, height, xDouble, yDouble);
       // Trace primary ray
-
       Colour col = scene->raytrace(ray, 3);
       averageCol.red = averageCol.red + col.red;
       averageCol.green = averageCol.green + col.green;
@@ -103,19 +102,8 @@ Colour Camera::antiAliasTrace(int width, int height, int x, int y, Scene *scene)
 
 Colour Camera::traceRay(int width, int height, int x, int y, Scene *scene)
 {
-  double xFloat = (double) x;
-  double yFloat = (double) y;
 
-  Colour col;
-
-  for (xFloat; xFloat < x + 1; xFloat = xFloat + 0.1f )
-  {
-    for (yFloat; yFloat < y + 1; yFloat = yFloat + 0.1f )
-    {
-      col = antiAliasTrace(width, height, xFloat, yFloat, scene);
-    }
-  }
-
+  Colour col = antiAliasTrace(width, height, x, y, scene);
 
   return col;
 }

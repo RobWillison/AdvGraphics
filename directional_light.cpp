@@ -5,7 +5,6 @@
 #include "directional_light.h"
 
 // specified by a direction and a colour
-
 DirectionalLight::DirectionalLight(Vector &d, Colour &i)
 {
   direction.x = -d.x;
@@ -16,7 +15,6 @@ DirectionalLight::DirectionalLight(Vector &d, Colour &i)
 }
 
 // provide the intensity and direction from which light arrives at given vertex
-
 void DirectionalLight::getLightProperties(Vertex &pos, Vector *ldir, Colour *i)
 {
   // the direction is always the same (light is infinitely far away)

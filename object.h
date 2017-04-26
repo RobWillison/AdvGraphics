@@ -23,7 +23,6 @@ class Object {
   void setMaterial(Material *m);
   Colour getColour();
   virtual bool intersect(Ray &ray, Hit *h) { return false; } // primary and secondary ray intersections
-  virtual bool sintersect(Ray &ray, Hit *h, double tl); // shadow ray intersections
   virtual bool boundingBoxIntersect(AABoundingBox *boundingBox) { return false; };
 };
 
