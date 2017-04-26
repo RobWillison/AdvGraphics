@@ -9,10 +9,10 @@ using namespace std;
 #include "scene.h"
 #include "sphere.h"
 #include "triangle.h"
+#include "plane.h"
 #include "directional_light.h"
 #include "point_light.h"
 #include "camera.h"
-#include "plyModel.h"
 #include "quadratic.h"
 #include "octree.h"
 
@@ -228,27 +228,45 @@ int main(int argc, const char *argv[])
       background2 = new Triangle(tri4, tri6, tri5);
       background1->setMaterial(m);
       background2->setMaterial(m);
-      scene->addObject(*background1);
-      scene->addObject(*background2);
+      // scene->addObject(*background1);
+      // scene->addObject(*background2);
     }
   }
   m = new Material();
   m->ka.red = 0.1f;
   m->ka.green = 0.1f;
-  m->ka.blue = 0.1;
+  m->ka.blue = 0.2;
   m->kd.red = 0.1f;
   m->kd.green = 0.1f;
-  m->kd.blue = 0.1f;
+  m->kd.blue = 0.7f;
   m->kr.red =  0.1f;
   m->kr.green = 0.1f;
   m->kr.blue = 0.1f;
   m->ks.red = 0.2f;
   m->ks.green =  0.2f;
-  m->ks.blue =  0.2f;
-  m->kt.red = 0.8;
-  m->kt.green = 0.8;
-  m->kt.blue = 0.8;
-  m->n = 2.0f;
+  m->ks.blue =  0.5f;
+  m->kt.red = 0.1;
+  m->kt.green = 0.1;
+  m->kt.blue = 0.1;
+  m->n = 400.0f;
+
+  Material *m2 = new Material();
+  m2->ka.red = 0.1f;
+  m2->ka.green = 0.2f;
+  m2->ka.blue = 0.1;
+  m2->kd.red = 0.1f;
+  m2->kd.green = 0.7f;
+  m2->kd.blue = 0.1f;
+  m2->kr.red =  0.1f;
+  m2->kr.green = 0.1f;
+  m2->kr.blue = 0.1f;
+  m2->ks.red = 0.2f;
+  m2->ks.green =  0.5f;
+  m2->ks.blue =  0.2f;
+  m2->kt.red = 0.1;
+  m2->kt.green = 0.1;
+  m2->kt.blue = 0.1;
+  m2->n = 400.0f;
 
 
   //Load Model Into Scene10
@@ -260,36 +278,26 @@ int main(int argc, const char *argv[])
 
   Sphere *sphere;
   Vertex p;
-  p.set(0, 0, 2, 3.0);
+  p.set(0, 0, 0, 3.0);
   sphere = new Sphere(p, 1);
-  sphere->setMaterial(m);
-
-  Vertex planeVer1;
-  planeVer1.set(-1, -1, 0, 1);
-  Vertex planeVer2;
-  planeVer2.set(-1, 1, 0, 1);
-  Vertex planeVer3;
-  planeVer3.set(1, -1, 0, 1);
-  Vertex planeVer4;
-  planeVer4.set(1, 1, 0, 1);
-  Vertex planeVer5;
-  planeVer5.set(1, -1, 0, 1);
-  Vertex planeVer6;
-  planeVer6.set(-1, 1, 0, 1);
-
-  // Triangle *plane = new Triangle(planeVer1, planeVer2, planeVer3);
-  // Triangle *plane2 = new Triangle(planeVer4, planeVer5, planeVer6);
-  // plane->setMaterial(m);
-  // plane2->setMaterial(m);
-  //scene->addObject(*plane);
-  // scene->addObject(*plane2);
+  sphere->setMaterial(m2);
 
 
   double terms[] = {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0, 1.0, 0.0, -1.0};
   Quadratic *quadratic = new Quadratic(terms);
   quadratic->setMaterial(m);
 
-  //scene->addObject(*quadratic);
+  Vertex planeVer1;
+  planeVer1.set(0, 0, 2, 1);
+  Vertex planeVer2;
+  planeVer2.set(0, 1, 2, 1);
+  Vertex planeVer3;
+  planeVer3.set(1, 0, 5, 1);
+
+  Plane *plane = new Plane(planeVer1, planeVer2, planeVer3);
+  plane->setMaterial(m);
+  scene->addObject(*plane);
+
   scene->addObject(*sphere);
   int i;
   //Add 10 random spheres to the scene

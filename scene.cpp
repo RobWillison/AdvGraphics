@@ -287,12 +287,12 @@ Colour Scene::raytrace(Ray &ray, int level)
         float krValue = this->calculateFresnelKr(closest, refractedRay, ray, normal);
         float ktValue = 1 - krValue;
 
-        kr.red = kr.red * krValue;
-        kr.blue = kr.blue * krValue;
-        kr.green = kr.green * krValue;
-        kt.red = kt.red * ktValue;
-        kt.green = kt.green * ktValue;
-        kt.blue = kt.blue * ktValue;
+        kr.red = krValue;
+        kr.blue = krValue;
+        kr.green = krValue;
+        kt.red = ktValue;
+        kt.green = ktValue;
+        kt.blue = ktValue;
       }
 
       if (shadow) {

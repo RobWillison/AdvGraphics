@@ -1,9 +1,15 @@
 \begin{thebibliography}{1}
 
-\bibitem{triabgle}
+\bibitem{triangle}
 Ray tracing: Rendering a triangle.
 \newblock
   \url{https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/ray-triangle-intersection-geometric-solution}.
-\newblock Accessed: 2016-04-10.
+\newblock Accessed: 2017-04-10.
+
+\bibitem{quadratic}
+Rray - quadric intersection.
+\newblock
+  \url{http://www.bmsc.washington.edu/people/merritt/graphics/quadrics.html}.
+\newblock Accessed: 2017-04-24.
 
 \end{thebibliography}

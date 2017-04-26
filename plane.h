@@ -1,15 +1,15 @@
-#ifndef _TRIANGLE_H_
-#define _TRIANGLE_H_
+#ifndef _PLANE_H_
+#define _PLANE_H_
 
 #include "object.h"
 
 // The triangle object class, extends Object class.
 
-class Triangle: public Object {
+class Plane: public Object {
  public:
    Vertex vertexs [3];
-  Triangle(Vertex &v1, Vertex &v2, Vertex &v3);
-  Triangle();
+  Plane(Vertex &v1, Vertex &v2, Vertex &v3);
+
   void set(Vertex &v1, Vertex &v2, Vertex &v3);
   bool intersect(Ray &ray, Hit *h);
   bool boundingBoxIntersect(AABoundingBox *boundingBox);
